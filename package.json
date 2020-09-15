@@ -137,11 +137,12 @@
     ]
   },
   "dependencies": {
-    "swiper": "latest",
+    "gsap": "^3.5.1",
     "handlebars": "latest",
     "jquery": "latest",
     "navigo": "latest",
     "normalize.css": "latest",
+    "swiper": "latest",
     "tingle.js": "^0.13.2"
   }
 }

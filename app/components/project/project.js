@@ -11,3 +11,5 @@ import "./gui/gui";
 // -require('./p-example/p-example');
 
 require('./header/header');
+require('./names/names');
+require('./name/name');

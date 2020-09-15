@@ -1,0 +1,27 @@
+@font-face {
+    font-family: 'Cera Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Cera Round Pro Bold'), url('TypeMates  Cera Round Pro Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Cera Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Cera Round Pro Medium'), url('TypeMates  Cera Round Pro Medium.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Glober Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Glober Bold'), url('Glober Bold.woff') format('woff');
+}
+
+@font-face {
+    font-family: 'Glober Regular';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Glober Regular'), url('Glober Regular.woff') format('woff');
+}

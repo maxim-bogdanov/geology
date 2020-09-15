@@ -10,7 +10,7 @@
 
   transform: translateX(-50%);
   // Константы
-  @mixin mod($mod) {
+  @mixin mod($mod) { 
     @include modifier("header", $mod) {
       @content;
     }

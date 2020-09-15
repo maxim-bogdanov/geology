@@ -1,0 +1,20 @@
+mixin name(content, params)
+  .name&attributes(attributes)
+    .name-inner
+      .name__img
+        img(src=copyright.names[0].children[0].children[0].img)
+        .name__info !{src=copyright.names[0].children[0].children[0].info}
+      .name__descr
+        .name__title-wrap
+          .name__title.title
+            .title-inner.title-inner_up-down.title-inner_left-dot
+              .title_up
+              .title_down
+              .title-text !{copyright.names[0].children[0].children[0].title}
+        .name__parent-wrap
+          .name__parent.title.title_thin.title_full-bg.title_main
+            .title-inner.title-inner_up.title-inner_right-dot.title-inner_left-dot
+              .title_up
+              .title_down
+              .title-text Наука о веществе
+        .name__content !{src=copyright.names[0].children[0].children[0].content}
