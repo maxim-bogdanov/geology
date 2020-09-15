@@ -1,0 +1,141 @@
+.header {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  z-index: 10;
+
+  width: 100%;
+  max-width: 1770px;
+  margin: 0 auto;
+
+  transform: translateX(-50%);
+  // Константы
+  @mixin mod($mod) {
+    @include modifier("header", $mod) {
+      @content;
+    }
+  }
+
+  &__top {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+  &__name {
+    position: relative;
+    z-index: 2;
+
+    color: #aaaaaa;
+    &-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+
+      font-size: 26px;
+      font-family: "Cera Medium";
+      white-space: nowrap;
+
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  &__back {
+    position: absolute;
+    top: 0;
+    left: -230px;
+    z-index: -1;
+
+    display: none;
+
+    font-size: 24px;
+    font-family: "Cera Medium", sans-serif;
+    &_active {
+      display: flex;
+    }
+    &-text {
+      position: absolute;
+      top: 50%;
+      left: 98px;
+
+      white-space: nowrap;
+
+      transform: translateY(-50%);
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: -26px;
+
+        width: 10px;
+        height: 10px;
+
+        background-image: image("header/backtriangle.png");
+        transform: translateY(-50%);
+      }
+    }
+  }
+
+  &__score {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    margin-top: 14px;
+
+    img {
+      display: block;
+    }
+
+    &-inner {
+      position: relative;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &_end {
+        margin-top: 83px;
+        // последняя страница
+
+        transform: scale(2.11);
+      }
+    }
+
+    &_active {
+      display: flex;
+    }
+
+    &-title {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+
+      font-size: 12px;
+      font-family: "Glober Bold";
+      text-align: center;
+      color: #6a737c;
+      text-transform: uppercase;
+
+      transform: translateX(-50%);
+    }
+    &-num {
+      position: absolute;
+      left: 50%;
+
+      margin-top: 26px;
+
+      font-size: 76px;
+      font-family: "Cera Bold", sans-serif;
+      color: #ffffff;
+
+      transform: translateX(-50%);
+    }
+  }
+}

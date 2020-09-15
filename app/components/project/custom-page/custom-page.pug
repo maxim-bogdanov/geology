@@ -1,0 +1,25 @@
+extends ../../framework/page/page
+
+append constants
+  if php && !isBitrix()
+    include ../utils/php-utils/php-utils.php
+
+append mixins
+  include ../../framework/framework
+  include ../project
+
+append body_before
+  //-script.
+      if (window !== top) { document.body.className += ' _iframe'; }
+  //-include _svg-symbols
+  //-+bitrix-panel()
+
+
+append modal
+
+
+block page
+  //- input(type="checkbox" id="menu-burger")
+  .page.custom-page
+    //- include ../custom-header/custom-header
+    block content

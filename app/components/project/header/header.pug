@@ -1,0 +1,9 @@
+mixin header(content, params)
+  header.header&attributes(attributes)
+    .header__top
+      .header__name 
+        .header__name-text !{copyright.header.title.content}
+        img(src=copyright.header.title.img)
+        a.header__back(href="#")
+          .header__back-text !{copyright.header.back.content}
+          img(src=copyright.header.back.img)

@@ -1,0 +1,35 @@
+{
+  "og": {
+    "title": "<?= $share->title ?>",
+    "description": "<?= $share->description ?>",
+    "canonical_url": "<?= $share->canonical_url ?>",
+    "fb_app_id": "",
+    "image": {
+      "default": {
+        "val": "<?= $share->image ?>",
+        "width": 1200,
+        "height": 630
+      }
+    },
+    "#image": {
+      "default": {
+        "val": "<?= $share->image['fb'] ?>",
+        "width": 1200,
+        "height": 630
+      },
+      "vk": "<?= $share->image['vk'] ?>",
+      "tw": "<?= $share->image['tw'] ?>"
+    }
+  },
+  "header": {
+    "title": {
+    "content":"Геологические науки",
+    "img": "images/header/name.png"
+    },
+    "back": {
+        "content": "В начало",
+        "class": "header__back_visible",
+        "img": "images/header/back.png"
+    }
+  } 
+}

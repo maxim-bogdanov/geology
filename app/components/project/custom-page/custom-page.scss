@@ -1,0 +1,8 @@
+@import "../../framework/page/page";
+
+.custom-page {
+  min-height: 100vh;
+  position: relative;
+  height: 100%;
+  @extend %DEFAULT;
+}

@@ -1,0 +1,22 @@
+@import "../../../../../node_modules/swiper/swiper";
+.carousel {
+  // Константы
+  @mixin mod($mod) {
+    @include modifier("carousel", $mod){
+      @content;
+    }
+  }
+  &__list {
+    height: 100%;
+  }
+  //.slick-dots {
+  //  display: inline-block;
+  //  [role="presentation"] {
+  //    display: inline-block;
+  //
+  //    &.slick-active {
+  //      color: #626200;
+  //    }
+  //  }
+  //}
+}

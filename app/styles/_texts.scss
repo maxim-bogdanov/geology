@@ -1,0 +1,11 @@
+/**
+ * Обычный текст
+ */
+%DEFAULT {
+  font-family: $Arial;
+  font-size: 18px;
+  color: #000000;
+  @include MOBILE {
+    font-size: 20px;
+  }
+}
