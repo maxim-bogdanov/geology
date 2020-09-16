@@ -6,6 +6,18 @@
     }
   }
 
+  &_right {
+    .name-inner {
+      flex-direction: row-reverse;
+    }
+    .name__title-wrap {
+      justify-content: flex-end;
+    }
+    .name__parent-wrap {
+      justify-content: flex-start;
+    }
+  }
+
   color: #ffffff;
 
   padding: 0 75px;

@@ -1,3 +1,6 @@
+
+
+
 .names {
   // Константы
   @mixin mod($mod) {
@@ -6,6 +9,8 @@
     }
   }
   $color: #ff0000;
+
+  
 
   position: absolute;
   height: 100vh;
@@ -16,12 +21,12 @@
   .title {
     font-family: 'Cera Bold';
     font-size: 32px;
-    padding: 10px;
+    padding: 9px;
     border-radius: 40px;
 
     &-text {
       position: relative;
-      padding: 15px 30px;
+      padding: 11px 30px;
     }
 
     &-inner {
@@ -44,29 +49,60 @@
       bottom: 0;
     }
 
-    &_main {
-      background: image('plus.png') 40px 40px,
-                  image('plus.png') 90% 40px;
-      background-repeat: no-repeat, no-repeat;
-      .title-text {
-        padding: 15px 80px;
-      }
-    }
-
-    &_thin {
+    @mixin thin {
+      // &_thin {
       border: 1px solid rgba($color: $color, $alpha: 0.8);
+      // }
     }
 
-    &_thick {
+    @mixin thick {
+      // &_thick {
       border: 5px solid $color;
+      // }
     }
 
-    &_full-bg {
+    @mixin full-bg {
       background-color: rgba($color: $color, $alpha: 0.15);
     }
 
-    &-inner_left-dot {
+    @mixin left-dot {
       &::before {
+        content: '';
+        position: absolute;
+
+        left: -5px;
+        top: 50%;
+
+        transform: translate(-30%, -50%);
+
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        border: 2px solid $color;
+        background-color: #15171c;
+      }
+    }
+
+    @mixin right-dot {
+      &::after {
+        content: '';
+        position: absolute;
+
+        right: -8px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        border: 2px solid $color;
+        background-color: #15171c;
+      }
+    }
+
+    @mixin inner_left-dot {
+      .title-inner::before {
         content: '';
         position: absolute;
 
@@ -80,11 +116,11 @@
         border-radius: 50%;
         border: 2px solid $color;
         background-color: transparent;
-      }
+      }   
     }
 
-    &-inner_right-dot {
-      &::after {
+    @mixin inner_right-dot {
+      .title-inner::after {
         content: '';
         position: absolute;
 
@@ -101,7 +137,7 @@
       }
     }
 
-    &-inner_down {
+    @mixin inner_down {
       .title_down {
         border: 2px dashed $color;
         border-top: none;
@@ -114,8 +150,8 @@
         border-radius: 30px 30px 0 0;
       }
     }
-  
-    &-inner_up {
+
+    @mixin inner_up {
       .title_down {
         border: 2px solid $color;
         border-top: none;
@@ -129,7 +165,7 @@
       }
     }
 
-    &-inner_up-down {
+    @mixin inner_up-down {
       .title_down {
         border: 2px solid $color;
         border-top: none;
@@ -141,6 +177,119 @@
         border-bottom: none;
         border-radius: 30px 30px 0 0;
       }
+    }
+
+    @mixin plus-numbers {
+      background: image('plus.png') 8% 56%,
+                  image('plus.png') 93% 56%;
+      background-repeat: no-repeat, no-repeat;
+      .title-text {
+        padding: 11px 80px;
+      }
+      &::before {
+        content: '0,01';
+        font-family: 'Glober Bold';
+        font-size: 10px;
+        color: $color;
+        left: 14%;
+        top: 50%;
+        position: absolute;
+      }
+      &::after {
+        content: '0,01';
+        font-family: 'Glober Bold';
+        font-size: 10px;
+        color: $color;
+        right: 14%;
+        top: 50%;
+        position: absolute;
+      }
+    }
+
+    // заголовок у контента
+    &_content {
+      padding: 0 9px;
+      font-size: 42px;
+
+      @include thick;
+      // border: 5px solid $color;
+
+      background: image('plus.png') 96% 56%;
+      background-repeat: no-repeat;
+    }
+
+
+    // самый первый заголовок в центре
+    &_main-active {
+      @include thick;
+      padding: 0 9px;
+
+      font-size: 42px;
+
+      text-transform: uppercase;
+
+      @include plus-numbers;
+    }
+
+    // самый первый заголовок не в центре
+    &_main-passive {
+      @include thin;
+      @include full-bg;
+      @include plus-numbers;
+      @include inner_up-down;
+
+      padding: 10px 9px;
+
+      font-size: 32px;
+
+      text-transform: uppercase;
+    }
+
+
+    // заголовок родителя
+    &_parent {
+      @include thin;
+      @include full-bg;
+      @include plus-numbers;
+      @include inner_left-dot;
+      @include inner_right-dot;
+      @include inner_up-down;
+    }
+
+    // при перемещении камеры (верхняя часть)
+    &_fly-up {
+      @include inner_down;
+    }
+
+    // при перемещении камеры (нижняя часть)
+    &_fly-down {
+      @include inner_up;
+    }
+
+    // активная нижняя закрашенная
+    &_fill-down {
+      @include thin;
+      @include full-bg;
+      @include inner_up;
+    }
+
+    // активная верхняя закрашенная
+    &_fill-up {
+      @include thin;
+      @include full-bg;
+      @include inner_down;
+    }
+
+    // активная нижняя не закрашенная
+    &_notfill-down {
+      @include thin;
+      @include inner_up;
+    }
+
+    // активная верхняя не закрашенная
+    &_notfill-up {
+      @include thin;
+      @include inner_down;
     }
   }
 }
