@@ -18,16 +18,19 @@ class Map extends Plugin {
     this.$element = $element;
 
     const app = this.#app = new PIXI.Application({
-      width: window.innerWidth, height: window.innerHeight, backgroundColor: 0x1099bb
+      width: window.innerWidth, height: window.innerHeight
     });
+
+    const background = PIXI.Sprite.from('images/bg.png');
+    app.stage.addChild(background);
 
     $(window).on('resize', this.resize.bind(this));
 
     const map = new MapContainer({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 3000, // контента
-      contentHeight: 3000
+      contentWidth: 2000, // контента
+      contentHeight: 1500
     });
 
     app.stage.addChild(map);
@@ -35,6 +38,7 @@ class Map extends Plugin {
     $element.append(app.view);
 
     this.resize();
+
   }
 
   resize() {
