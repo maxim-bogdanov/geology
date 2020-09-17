@@ -23,10 +23,12 @@
   padding: 0 75px;
   &__parent {
     position: relative;
+    cursor: pointer;
   }
 
   &__title {
     position: relative;
+    cursor: pointer;
   }
 
   &-inner {

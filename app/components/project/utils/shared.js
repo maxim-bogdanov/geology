@@ -4,6 +4,11 @@ global.$ = $;
 import Handlebars from 'handlebars';
 global.Handlebars = Handlebars;
 
+import * as PIXI from 'pixi.js'
+global.PIXI = PIXI;
+
+console.log(PIXI);
+
 import gsap from 'gsap';
 global.gsap = gsap;
 
@@ -19,37 +24,3 @@ export const $eventBus = $(eventBus);
 
 //
 export const $window = $(window);
-
-let num;
-export function setQuestionNumber(_num){
-    num = _num || 0;
-}
-
-//
-export function getQuestionNumber(){
-    return num;
-}
-
-let score = 0;
-export function setScore(_score){
-    score = _score || 0;
-}
-
-//
-export function getScore(){
-    return score;
-}
-
-export let isQuizActive = false;
-
-export function setQuizActive(_isQuizActive){
-    isQuizActive = _isQuizActive || false;
-}
-
-//
-
-export let isQuizNopicActive = false;
-
-export function setQuizNopicActive(_isQuizNopicActive){
-    isQuizNopicActive = _isQuizNopicActive || false;
-}

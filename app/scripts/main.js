@@ -1,5 +1,5 @@
+import { eventBus, setData } from '../components/project/utils/shared';
 import '../components/project/project';
-
 import $ from 'jquery';
 
 global.jQuery = global.$ = $;
@@ -18,9 +18,9 @@ function onDocumentReady() {
 
   $.getJSON('data/data.json', function (data) {
 
-    // console.log(JSON.parse((JSON.stringify(data))));
     let newData = upgradeData(data);
-    console.log(newData);
+    setData(newData);
+
   });
 
   function upgradeData(data) {

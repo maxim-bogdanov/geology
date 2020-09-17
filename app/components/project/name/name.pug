@@ -1,5 +1,6 @@
 mixin name(content, params)
   .name.name_right&attributes(attributes)
+    //- |<script type="text/template" class="__tpl">
     .name-inner
       .name__img
         img(src=copyright.names[0].children[0].children[0].img)
@@ -18,3 +19,4 @@ mixin name(content, params)
               .title_down
               .title-text Наука о веществе
         .name__content !{src=copyright.names[0].children[0].children[0].content}
+    //- |</script>

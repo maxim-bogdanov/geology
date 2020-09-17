@@ -10,6 +10,7 @@ import "./gui/gui";
 // Страницы
 // -require('./p-example/p-example');
 
+require('./map/map');
 require('./header/header');
 require('./names/names');
 require('./name/name');

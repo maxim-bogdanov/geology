@@ -2,6 +2,7 @@ block modal
 if typeof version === "function"
   script.
     var VERSION = !{JSON.stringify(version())};
+    var DEBUG = !{debug};
     function base_url(url) {
       return (!{JSON.stringify(base_url(''))} + url).replace(/\/{2,}/g, "/");
     }

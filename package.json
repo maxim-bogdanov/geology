@@ -142,6 +142,7 @@
     "jquery": "latest",
     "navigo": "latest",
     "normalize.css": "latest",
+    "pixi.js": "^5.3.3",
     "swiper": "latest",
     "tingle.js": "^0.13.2"
   }
