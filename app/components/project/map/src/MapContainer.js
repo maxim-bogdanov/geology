@@ -1,6 +1,8 @@
+import { eventBus, data } from '../../utils/shared';
 const {Container, Graphics} = global.PIXI;
+
 export default class MapContainer extends Container {
-  constructor({width, height, contentWidth, contentHeight} = {}) {
+  constructor({width, height, contentWidth, contentHeight}) {
     super();
     
     this.width = width;
@@ -16,10 +18,15 @@ export default class MapContainer extends Container {
     this.contentContainer.pivot.x = this.width / 2;
     this.contentContainer.pivot.y = this.height / 2;
 
-    if (DEBUG)
-      this.addTest();
+    // if (DEBUG)
+      // this.addTest();   
 
-    this.setOffset({x: -100, y: -100}, {ease: "power1.out"});
+    $(eventBus).on('focus-changed', (e, coord) => {
+      console.log(coord)
+      this.setOffset(coord, {ease: "power1.out"});
+    });
+
+    // this.setOffset({x: -600, y: -100}, {ease: "power1.out"});
   }
 
 
@@ -29,18 +36,19 @@ export default class MapContainer extends Container {
     this.contentContainer = null;
   }
 
-  addTest() {
-    const graphics = new Graphics();
 
-    const {width, height} = this;
+  // addTest() {
+  //   const graphics = new Graphics();
 
-    // Rectangle
-    graphics.beginFill(0xDE3249);
-    graphics.drawRect(1000, 700, 700, 200);
-    graphics.endFill();
+  //   const {width, height} = this;
 
-    this.contentContainer.addChild(graphics);
-  }
+  //   // Rectangle
+  //   graphics.beginFill(0xDE3249);
+  //   graphics.drawRect(1000, 700, 700, 200);
+  //   graphics.endFill();
+
+  //   this.contentContainer.addChild(graphics);
+  // }
 
 
   setOffset({x:offsetX, y:offsetY}, options) {
@@ -57,9 +65,8 @@ export default class MapContainer extends Container {
   }
 
   set offsetX(offsetX) {
-   
     const {width, contentWidth, contentContainer} = this;
-    offsetX = Math.min(0, Math.max(offsetX, width - contentWidth));
+    // offsetX = Math.min(0, Math.max(offsetX, width - contentWidth));
 
     this._offsetX = offsetX;
     contentContainer.position.x = offsetX;
@@ -71,7 +78,7 @@ export default class MapContainer extends Container {
 
   set offsetY(offsetY) {
     const {height, contentHeight, contentContainer} = this;
-    offsetY = Math.min(0, Math.max(offsetY, height - contentHeight));
+    // offsetY = Math.min(0, Math.max(offsetY, height - contentHeight));
 
     this._offsetY = offsetY;
     contentContainer.position.y = offsetY;

@@ -1,10 +1,11 @@
+import { eventBus } from '../../../components/project/utils/shared';
 import { Container } from "pixi.js";
 import {
   registerPlugins,
   Plugin
 } from "../../framework/jquery/plugins/plugins";
 import MapContainer from "./src/MapContainer";
-
+import Renderer from "./src/Renderer";
 
 class Map extends Plugin {
 
@@ -29,9 +30,10 @@ class Map extends Plugin {
     const map = new MapContainer({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 2000, // контента
+      contentWidth: 3000, // контента
       contentHeight: 1500
     });
+    const renderer = new Renderer(map);
 
     app.stage.addChild(map);
 

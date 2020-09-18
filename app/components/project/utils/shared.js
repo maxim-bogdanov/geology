@@ -7,8 +7,6 @@ global.Handlebars = Handlebars;
 import * as PIXI from 'pixi.js'
 global.PIXI = PIXI;
 
-console.log(PIXI);
-
 import gsap from 'gsap';
 global.gsap = gsap;
 
