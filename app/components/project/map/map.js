@@ -36,18 +36,18 @@ class Map extends Plugin {
     const map = new MapContainer({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 3000, // контента
+      contentWidth: 2600, // контента
       contentHeight: 1500,
     });
     const tree = new Tree({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 3000, // контента
+      contentWidth: 2600, // контента
       contentHeight: 1500,
     });
 
     app.stage.addChild(map);
-    app.stage.addChild(tree);
+    map.contentContainer.addChild(tree);
 
     $element.append(app.view);
 
@@ -55,7 +55,6 @@ class Map extends Plugin {
   }
 
   resize() {
-    return;
     const { offsetWidth, offsetHeight } = this.$element.get(0);
     //TODO: scale contain
     this.#app.renderer.resize(window.innerWidth, window.innerHeight);

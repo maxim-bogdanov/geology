@@ -10,8 +10,25 @@
   width: 100vw;
 
   &__font {
-    font-family: "Cera Bold";
-    font-size: 32px;
-    display: none;
+    &1 {
+      font-family: "Cera Bold";
+      font-size: 32px;
+      display: none;
+    }
+    &2 {
+      font-family: "Cera Medium";
+      font-size: 32px;
+      display: none;
+    }
+    &3 {
+      font-family: "Glober Bold";
+      font-size: 32px;
+      display: none;
+    }
+    &4 {
+      font-family: "Glober Regular";
+      font-size: 32px;
+      display: none;
+    }
   }
 }

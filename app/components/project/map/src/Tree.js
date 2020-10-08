@@ -7,14 +7,18 @@ export default class Tree extends Container {
   constructor({ width, height, contentWidth, contentHeight }) {
     super();
 
+    this.widthContainer = width;
+    this.heightContainer = height;
+
     this.width = width;
     this.height = height;
+
     this.contentWidth = contentWidth;
     this.contentHeight = contentHeight;
 
     this.center = {
-      x: this.width / 2,
-      y: this.height / 2,
+      x: this._width / 2,
+      y: this._height / 2,
     };
 
     this.draw();
@@ -52,7 +56,5 @@ export default class Tree extends Container {
       let node = new Node(dataTitle, coord, "main", center);
       this.addChild(node);
     }
-    // this.children[0].buttonMode = false;
-    // this.children[0].interactive = false;
   }
 }

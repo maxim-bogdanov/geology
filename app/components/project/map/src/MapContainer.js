@@ -15,13 +15,10 @@ export default class MapContainer extends Container {
 
     this.addChild(contentContainer);
 
-    this.contentContainer.pivot.x = this.width / 2;
-    this.contentContainer.pivot.y = this.height / 2;
-
     // if (DEBUG)
     // this.addTest();
 
-    $(eventBus).on("focus-changed", (e, coord) => {
+    $(eventBus).on("focus-changed", (e, coord, activeNode) => {
       console.log("offset", coord);
       this.setOffset(coord, {
         ease: "power1.out",
@@ -50,12 +47,14 @@ export default class MapContainer extends Container {
   // }
 
   setOffset({ x: offsetX, y: offsetY }, options) {
+    console.log(offsetX, offsetY);
     gsap.to(this, {
       offsetX,
       offsetY,
       duration: 2,
       ...options,
     });
+    console.log(offsetX, offsetY);
   }
 
   get offsetX() {
@@ -67,6 +66,7 @@ export default class MapContainer extends Container {
     // offsetX = Math.min(0, Math.max(offsetX, width - contentWidth));
 
     this._offsetX = offsetX;
+    console.log(offsetX);
     contentContainer.position.x = offsetX;
   }
 
