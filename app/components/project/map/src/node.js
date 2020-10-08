@@ -13,9 +13,9 @@ const buttonStyle = {
     },
     rect: {
       // top: 20,
-      // left: 100,
+      // first: 100,
       top: 25,
-      left: 30,
+      first: 30,
       lineWidth: 9,
     },
   },
@@ -35,7 +35,7 @@ export default class Node extends Container {
 
     // const test = new Graphics();
     // test.beginFill(0xff0000);
-    // test.drawCircle(0, 0, 5);
+    // test.drawRect(0, 0, 100, 100);
     // test.endFill();
     // this.addChild(test);
 
@@ -49,9 +49,9 @@ export default class Node extends Container {
     this.text = new Text(this.title, styleText);
 
     this.widthRect = this.text.width + buttonStyle[styleType].rect.top * 2;
-    this.heightRect = this.text.height + buttonStyle[styleType].rect.left * 2;
+    this.heightRect = this.text.height + buttonStyle[styleType].rect.first * 2;
 
-    this.text.x = -this.widthRect / 2 + buttonStyle[styleType].rect.left;
+    this.text.x = -this.widthRect / 2 + buttonStyle[styleType].rect.first;
     this.text.y = -this.heightRect / 2 + buttonStyle[styleType].rect.top;
 
     this.addChild(this.text);
@@ -59,36 +59,53 @@ export default class Node extends Container {
 
   // findSizeRect(styleType) {
   //   this.widthRect = this.text.width + buttonStyle[styleType].rect.top * 2;
-  //   this.heightRect = this.text.height + buttonStyle[styleType].rect.left * 2;
+  //   this.heightRect = this.text.height + buttonStyle[styleType].rect.first * 2;
   // }
 
   setPoints() {
     const lineWidth = buttonStyle[this.styleType].rect.lineWidth;
 
     this.points = {
-      left: {
+      first: {
         x: -this.widthRect / 2 - lineWidth / 2,
         y: 0,
       },
-      right: {
+      second: {
         x: this.widthRect / 2 + lineWidth / 2,
         y: 0,
       },
     };
   }
 
-  drawPoints() {
-    const leftPoint = new Graphics();
-    leftPoint.beginFill(0xffffff);
-    leftPoint.drawCircle(this.points.left.x, this.points.left.y, 4);
-    leftPoint.endFill();
-    this.addChild(leftPoint);
+  getPointCoord() {
+    const lineWidth = buttonStyle[this.styleType].rect.lineWidth;
 
-    const rightPoint = new Graphics();
-    rightPoint.beginFill(0xffffff);
-    rightPoint.drawCircle(this.points.right.x, this.points.right.y, 4);
-    rightPoint.endFill();
-    this.addChild(rightPoint);
+    return {
+      left: {
+        x: this.coord.x + this.widthRect / 2 + lineWidth / 2,
+        y: this.coord.y,
+      },
+      right: {
+        x: this.coord.x - this.widthRect / 2 - lineWidth / 2,
+        y: this.coord.y,
+      },
+    };
+  }
+
+  drawPoints() {
+    const color = 0xffffff;
+
+    const firstPoint = new Graphics();
+    firstPoint.beginFill(color);
+    firstPoint.drawCircle(this.points.first.x, this.points.first.y, 4);
+    firstPoint.endFill();
+    this.addChild(firstPoint);
+
+    const secondPoint = new Graphics();
+    secondPoint.beginFill(color);
+    secondPoint.drawCircle(this.points.second.x, this.points.second.y, 4);
+    secondPoint.endFill();
+    this.addChild(secondPoint);
   }
 
   draw() {
@@ -101,6 +118,7 @@ export default class Node extends Container {
       buttonStyle[this.styleType].rect.lineWidth,
       buttonStyle.color
     );
+
     graphics.beginFill(buttonStyle.color, 0);
     graphics.drawRoundedRect(
       -this.widthRect / 2,

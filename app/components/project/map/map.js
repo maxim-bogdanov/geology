@@ -36,14 +36,14 @@ class Map extends Plugin {
     const map = new MapContainer({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 2600, // контента
-      contentHeight: 1500,
+      contentWidth: 3000, // контента
+      contentHeight: 1900,
     });
     const tree = new Tree({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
-      contentWidth: 2600, // контента
-      contentHeight: 1500,
+      contentWidth: 3000, // контента
+      contentHeight: 1900,
     });
 
     app.stage.addChild(map);

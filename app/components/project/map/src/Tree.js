@@ -1,6 +1,7 @@
 import { eventBus } from "../../utils/shared";
 import data from "../../custom-data/custom-data";
 import Node from "./node";
+import Line from "./Line";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics } = global.PIXI;
 export default class Tree extends Container {
@@ -22,6 +23,7 @@ export default class Tree extends Container {
     };
 
     this.draw();
+    this.createLines();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
       this.selectedNode = activeNode;
@@ -32,13 +34,9 @@ export default class Tree extends Container {
 
   set selectedNode(node) {
     this.children.forEach((_node) => {
-      if (_node === node) {
-        _node.buttonMode = false;
-        _node.interactive = false;
-      } else {
-        _node.buttonMode = true;
-        _node.interactive = true;
-      }
+      const isSame = _node === node;
+      _node.buttonMode = !isSame;
+      _node.interactive = !isSame;
     });
   }
 
@@ -46,15 +44,53 @@ export default class Tree extends Container {
     const center = this.center;
 
     for (let id in data.newData) {
-      let dataTitle = data.newData[id];
+      const dataTitle = data.newData[id];
 
-      let coord = {
+      const coord = {
         x: center.x + this.contentWidth * dataTitle.x,
         y: center.y + this.contentHeight * dataTitle.y,
       };
 
-      let node = new Node(dataTitle, coord, "main", center);
+      const node = new Node(dataTitle, coord, "main", center);
+
       this.addChild(node);
     }
+    console.log(this.children);
+  }
+
+  drawPoint(point) {
+    let pointFirst = new Graphics();
+
+    const color = 0x0000ff;
+    pointFirst.beginFill(color);
+    pointFirst.drawCircle(point.left.x, point.left.y, 4);
+    pointFirst.drawCircle(point.right.x, point.right.y, 4);
+    pointFirst.endFill();
+    this.addChild(pointFirst);
+  }
+
+  createLines() {
+    this.children.forEach((parentNode) => {
+      if (parentNode.childs.length) {
+        parentNode.childs.forEach((IdChildNode) => {
+          const childNode = this.children.find(
+            (elem) => elem.id === IdChildNode
+          );
+
+          const childPoints = childNode.getPointCoord();
+          const parentPoints = parentNode.getPointCoord();
+
+          this.drawPoint(parentPoints);
+          this.drawPoint(childPoints);
+
+          console.log(childPoints);
+
+          const line = new Line(parentPoints, childPoints);
+          this.addChild(line);
+        });
+
+        console.log(this);
+      }
+    });
   }
 }
