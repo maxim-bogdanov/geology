@@ -1,14 +1,11 @@
-import data from '../components/project/custom-data/custom-data'
-import { eventBus } from '../components/project/utils/shared';
-import '../components/project/project';
-import $ from 'jquery';
+import data from "../components/project/custom-data/custom-data";
+import { eventBus } from "../components/project/utils/shared";
+import "../components/project/project";
+import $ from "jquery";
 
 global.jQuery = global.$ = $;
 
-
-
-$.when(isDocumentReady())
-  .done(onDocumentReady);
+$.when(isDocumentReady()).done(onDocumentReady);
 
 function onDocumentReady() {
   if ($.fn.initPlugins) {
@@ -17,17 +14,16 @@ function onDocumentReady() {
 
   $(document.documentElement).trigger("document:ready");
 
-  $(eventBus).on('change-focus', function(e, coord){
-    $(eventBus).trigger('focus-changed', coord);
-  })
+  $(eventBus).on("change-focus", function (e, coord, nodeContainer) {
+    $(eventBus).trigger("focus-changed", [coord, nodeContainer]);
+  });
   // console.log(data);
 }
-
 
 function isDocumentReady() {
   let def = $.Deferred();
 
-  $(document).ready(()=>def.resolve());
+  $(document).ready(() => def.resolve());
 
   return def.promise();
 }

@@ -1,10 +1,10 @@
-import { eventBus, data } from '../../utils/shared';
-const {Container, Graphics} = global.PIXI;
+import { eventBus, data } from "../../utils/shared";
+const { Container, Graphics } = global.PIXI;
 
 export default class MapContainer extends Container {
-  constructor({width, height, contentWidth, contentHeight}) {
+  constructor({ width, height, contentWidth, contentHeight }) {
     super();
-    
+
     this.width = width;
     this.height = height;
     this.contentWidth = contentWidth;
@@ -19,23 +19,22 @@ export default class MapContainer extends Container {
     this.contentContainer.pivot.y = this.height / 2;
 
     // if (DEBUG)
-      // this.addTest();   
+    // this.addTest();
 
-    $(eventBus).on('focus-changed', (e, coord) => {
-      console.log(coord)
-      this.setOffset(coord, {ease: "power1.out"});
+    $(eventBus).on("focus-changed", (e, coord) => {
+      console.log("offset", coord);
+      this.setOffset(coord, {
+        ease: "power1.out",
+      });
     });
 
     // this.setOffset({x: -600, y: -100}, {ease: "power1.out"});
   }
 
-
-
   destroy(options) {
     super.destroy(options);
     this.contentContainer = null;
   }
-
 
   // addTest() {
   //   const graphics = new Graphics();
@@ -50,13 +49,12 @@ export default class MapContainer extends Container {
   //   this.contentContainer.addChild(graphics);
   // }
 
-
-  setOffset({x:offsetX, y:offsetY}, options) {
+  setOffset({ x: offsetX, y: offsetY }, options) {
     gsap.to(this, {
       offsetX,
       offsetY,
       duration: 2,
-      ...options
+      ...options,
     });
   }
 
@@ -65,7 +63,7 @@ export default class MapContainer extends Container {
   }
 
   set offsetX(offsetX) {
-    const {width, contentWidth, contentContainer} = this;
+    const { width, contentWidth, contentContainer } = this;
     // offsetX = Math.min(0, Math.max(offsetX, width - contentWidth));
 
     this._offsetX = offsetX;
@@ -77,7 +75,7 @@ export default class MapContainer extends Container {
   }
 
   set offsetY(offsetY) {
-    const {height, contentHeight, contentContainer} = this;
+    const { height, contentHeight, contentContainer } = this;
     // offsetY = Math.min(0, Math.max(offsetY, height - contentHeight));
 
     this._offsetY = offsetY;

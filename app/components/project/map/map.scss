@@ -1,11 +1,17 @@
 .map {
   // Константы
   @mixin mod($mod) {
-    @include modifier("map", $mod){
+    @include modifier("map", $mod) {
       @content;
     }
   }
 
   height: 100vh;
   width: 100vw;
+
+  &__font {
+    font-family: "Cera Bold";
+    font-size: 32px;
+    display: none;
+  }
 }
