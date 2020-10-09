@@ -1,14 +1,15 @@
 import data from "../../custom-data/custom-data";
 import { eventBus } from "../../utils/shared";
+import { buttonStyle } from "./nodeSettings";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics, Text, BitmapText } = global.PIXI;
 
 export default class Line extends Container {
-  constructor(parentPoints, childPoints) {
+  constructor(parentNode, childNode) {
     super();
 
-    this.parentPoints = parentPoints;
-    this.childPoints = childPoints;
+    this.parentNode = parentNode;
+    this.childNode = childNode;
 
     this.graphics = new Graphics();
     this.addChild(this.graphics);
@@ -18,12 +19,30 @@ export default class Line extends Container {
 
   updatePosition() {}
 
-  setPoints() {
+  getPointCoord(node) {
+    const lineWidth = buttonStyle[node.styleType].rect.lineWidth;
     const {
-      parentPoints,
-      parentPoints: { x },
-      childPoints,
-    } = this;
+      position: { x, y },
+      widthRect,
+    } = node;
+
+    return {
+      left: {
+        x: x + widthRect / 2 + lineWidth / 2,
+        y,
+      },
+      right: {
+        x: x - widthRect / 2 - lineWidth / 2,
+        y,
+      },
+    };
+  }
+
+  setPoints() {
+    const { parentNode, childNode } = this;
+
+    const childPoints = this.getPointCoord(childNode);
+    const parentPoints = this.getPointCoord(parentNode);
 
     const isLeft =
       parentPoints.left.x + parentPoints.right.x <
