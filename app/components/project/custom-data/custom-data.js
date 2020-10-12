@@ -32,6 +32,7 @@ class CustomData  {
       // setData(newData);
   
       console.log(newData);
+      // console.log(newData);
       // for (let elem of dataKeys){
       //   console.log(elem + ' ' + ' x: ' + newData[elem].x + ' y: ' + newData[elem].y);
       // }
@@ -74,6 +75,13 @@ class CustomData  {
             centerX = (side == 'left') ? -1 : 1;
   
             newData[dataKeys[k]].y = 0.5 - (item - 1 + centerY) * yStep;
+            
+            if (!newData[dataKeys[k]].children) {
+              const style = newData[dataKeys[k]].y > 0 ? 'childDown' : 'childUp'; 
+              newData[dataKeys[k]].style = style;
+            } else {
+              newData[dataKeys[k]].style = 'parent';
+            }
             newData[dataKeys[k]].x = i * xStep * centerX;
             k++;
           }
