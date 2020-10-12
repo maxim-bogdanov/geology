@@ -1,9 +1,11 @@
 import { eventBus } from "../../utils/shared";
+import { randomNumber } from "../../utils/helpers";
 import data from "../../custom-data/custom-data";
 import Node from "./node";
 import Line from "./Line";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics } = global.PIXI;
+
 export default class Tree extends Container {
   constructor({ width, height, contentWidth, contentHeight }) {
     super();
@@ -22,17 +24,27 @@ export default class Tree extends Container {
       y: this._height / 2,
     };
 
+
+    this.drawFirst();
+    this.selectedNode = this.children[0];
     this.draw();
-    this.createLines();
+    // this.createLines();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
+
+      this.deleteNodes(this.selectedNode);
       this.selectedNode = activeNode;
+
+      if (this.selectedNode.id !== '0') {
+        this.draw();
+      }
     });
 
-    this.selectedNode = this.children[0];
+ 
   }
 
   set selectedNode(node) {
+    this._selectedNode = node;
     this.children.forEach((_node) => {
       const isSame = _node === node;
       _node.buttonMode = !isSame;
@@ -40,23 +52,101 @@ export default class Tree extends Container {
     });
   }
 
-  draw() {
-    const center = this.center;
+  get selectedNode() {
+    return this._selectedNode;
+  }
 
-    for (let id in data.newData) {
-      const dataTitle = data.newData[id];
+
+  deleteNodes(deletedNode) {
+    if (deletedNode.id === '0') return;
+    this.children.forEach( (child) => {
+
+      if (child === deletedNode) {
+        child.childs.forEach( (deletedChild) => {
+          this.children.forEach( (child) => {
+
+            if (child.id == deletedChild) {
+              child.delete();
+            }
+            return;
+          });
+          
+        })
+      }
+    });
+  }
+
+  drawFirst() {
+    const { center } = this;    
+    const dataTitle = data.newData['0'];
+
+    const coord = {
+      x: center.x + this.contentWidth * dataTitle.x,
+      y: center.y + this.contentHeight * dataTitle.y,
+    };
+
+    const node = (this.node = new Node(dataTitle, coord, 'main', center));
+    this.addChild(node);
+  }
+
+  draw() {
+
+    const { center, selectedNode } = this;
+    console.log(selectedNode.childs);
+    const dataTitle = selectedNode;
+
+
+    if (!dataTitle.childs) return;
+
+    dataTitle.childs.forEach( (childId) => {
+      const child = data.newData[childId];
 
       const coord = {
-        x: center.x + this.contentWidth * dataTitle.x,
-        y: center.y + this.contentHeight * dataTitle.y,
+        x: center.x + this.contentWidth * child.x,
+        y: center.y + this.contentHeight * child.y,
       };
 
-      const node = new Node(dataTitle, coord, "main", center);
-
+      const node = (this.node = new Node(child, coord, child.style, center));
       this.addChild(node);
-    }
+      this.animateNode(node);
+    });
+
+      // this.animateNode(node);
+    // }
     console.log(this.children);
   }
+
+  animateNode(node) {
+    if (node.id === "0") return;
+
+    const dx = 20;
+    const dy = 20;
+
+    this.tweenProperty(node, "x", -dx, dx);
+    this.tweenProperty(node, "y", -dy, dy);
+  }
+
+  tweenProperty(target, prop, min, max) {
+    gsap.to(target, {
+      duration: randomNumber(2, 3),
+      [prop]: target.defaultPosition[prop] + randomNumber(min, max),
+      ease: "Power1.easeInOut",
+      callbackScope: this,
+      onComplete: this.tweenProperty,
+      onCompleteParams: [target, prop, min, max],
+    });
+  }
+
+  update = () => {
+    this.children.forEach((child) => {
+      if (child instanceof Line) {
+        child.setPoints();
+      }
+    });
+    // console.log(this);
+    // console.log(t.target[0]);
+    // console.log("update");
+  };
 
   drawPoint(point) {
     let pointFirst = new Graphics();
@@ -69,6 +159,22 @@ export default class Tree extends Container {
     this.addChild(pointFirst);
   }
 
+  // createLines() {
+  //   this.children.forEach((parentNode) => {
+  //     if (parentNode.childs.length) {
+  //       parentNode.childs.forEach((IdChildNode) => {
+  //         const childNode = this.children.find(
+  //           (elem) => elem.id === IdChildNode
+  //         );
+
+  //         const line = new Line(parentNode, childNode);
+  //         this.addChild(line);
+  //       });
+  //     }
+  //   });
+  //   console.log(this);
+  // }
+
   createLines() {
     this.children.forEach((parentNode) => {
       if (parentNode.childs.length) {
@@ -77,20 +183,11 @@ export default class Tree extends Container {
             (elem) => elem.id === IdChildNode
           );
 
-          const childPoints = childNode.getPointCoord();
-          const parentPoints = parentNode.getPointCoord();
-
-          this.drawPoint(parentPoints);
-          this.drawPoint(childPoints);
-
-          console.log(childPoints);
-
-          const line = new Line(parentPoints, childPoints);
+          const line = new Line(parentNode, childNode);
           this.addChild(line);
         });
-
-        console.log(this);
       }
     });
+    console.log(this);
   }
 }
