@@ -51,6 +51,14 @@ export default class Node extends Container {
     this.text.y = -this.heightRect / 2 + buttonStyle[styleType].rect.top;
   }
 
+  hide() {
+    this.visible = false;
+  }
+
+  activate() {
+    this.visible = true;
+  }
+
   setPoints() {
     const lineWidth = buttonStyle[this.styleType].rect.lineWidth;
     const {

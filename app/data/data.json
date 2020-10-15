@@ -2,6 +2,7 @@
   "name": {
     "id": "0",
     "title": "ГЕОЛОГИЯ",
+    "style": "main",
     "children": [
       {
         "id": "-a",

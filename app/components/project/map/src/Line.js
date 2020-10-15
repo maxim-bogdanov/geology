@@ -18,9 +18,19 @@ export default class Line extends Container {
     this.addChild(this.points);
 
     this.setPoints();
+    // this.hide();
   }
 
   updatePosition() {}
+
+  
+  hide() {
+    this.visible = false;
+  }
+
+  activate() {
+    this.visible = true;
+  }
 
   setPoints() {
     const { parentNode, childNode } = this;

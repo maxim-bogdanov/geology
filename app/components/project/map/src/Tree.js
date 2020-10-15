@@ -3,7 +3,6 @@ import { randomNumber } from "../../utils/helpers";
 import data from "../../custom-data/custom-data";
 import Node from "./node";
 import Line from "./Line";
-import { active } from "browser-sync";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics } = global.PIXI;
 
@@ -20,32 +19,30 @@ export default class Tree extends Container {
     this.contentWidth = contentWidth;
     this.contentHeight = contentHeight;
 
-    this.deletedNodes = [];
-
     this.center = {
       x: this._width / 2,
       y: this._height / 2,
     };
 
-
-    this.drawFirst();
     this.selectedNode = this.children[0];
     this.draw();
-    // this.createLines();
+    this.createLines();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
 
-      if (!activeNode.childs.length) {
-        console.log(activeNode.childs);
-        this.deleteLines(this.selectedNode);
-      }
+      // if (!activeNode.childs.length) {
+      //   console.log(activeNode.childs);
+      //   this.deleteLines(this.selectedNode);
+      // }
         
-      this.deleteNodes(this.selectedNode);
+      // this.deleteNodes(this.selectedNode);
       this.selectedNode = activeNode;
+      this.activateNodes();
+      this.activateLines();
 
-      if (this.selectedNode.id !== '0') {
-        this.draw();
-      }
+      // if (this.selectedNode.id !== '0') {
+      //   this.draw();
+      // }
     });
 
  
@@ -65,36 +62,38 @@ export default class Tree extends Container {
   }
 
 
-  deleteNodes(deletedNode) {
-    this.deletedNodes = [];
-    if (deletedNode.id === '0') return;
+  activateNodes() {
+    const node = this.selectedNode;
+    this.activatedNodes = [];
+    if (node.id === '0') return;
 
     this.children.forEach( (child) => {
-      if (child === deletedNode) {
+      if (child === node) {
 
-        child.childs.forEach( (deletedChild) => {
+        child.childs.forEach( (activatedChild) => {
           this.children.forEach( (child) => {
 
-            if (child.id == deletedChild) {
-              this.deletedNodes.push(child);
-              this.removeChild(child);
+            if (child.id == activatedChild) {
+              this.activatedNodes.push(child);
+              child.activate();
             }
             return;
           });
         })
-
       }
     });
-    console.log(this.deletedNodes);
   }
 
-  deleteLines(deletedNode) {
-    if (deletedNode.id === '0') return;
 
-    this.deletedNodes.forEach( node => {
+
+  activateLines() {
+    const node = this.selectedNode;
+    if (node.id === '0') return;
+
+    this.activatedNodes.forEach( node => {
       this.children.forEach( child => {
         if ( child instanceof Line && child.childNode == node) {
-          this.removeChild(child);
+          child.activate();
         }
       })
     });
@@ -104,41 +103,23 @@ export default class Tree extends Container {
     
   }
 
-  drawFirst() {
-    const { center } = this;    
-    const dataTitle = data.newData['0'];
-
-    const coord = {
-      x: center.x + this.contentWidth * dataTitle.x,
-      y: center.y + this.contentHeight * dataTitle.y,
-    };
-
-    const node = (this.node = new Node(dataTitle, coord, 'main', center));
-    this.addChild(node);
-  }
 
   draw() {
+    const center = this.center;
 
-    const { center, selectedNode } = this;
-    const dataTitle = selectedNode;
-
-    if (!dataTitle.childs) return;
-
-    dataTitle.childs.forEach( (childId) => {
-      const child = data.newData[childId];
+    for (let id in data.newData) {
+      const dataTitle = data.newData[id];
 
       const coord = {
-        x: center.x + this.contentWidth * child.x,
-        y: center.y + this.contentHeight * child.y,
-      };
+        x: center.x + this.contentWidth * dataTitle.x,
+        y: center.y + this.contentHeight * dataTitle.y,
+      }
+      const node = new Node(dataTitle, coord, dataTitle.style, center);
 
-      const node = (this.node = new Node(child, coord, child.style, center));
+      node.hide();
       this.addChild(node);
       this.animateNode(node);
-    });
-
-    console.log(this);
-    this.createLines();
+    }
   }
 
   animateNode(node) {
@@ -168,9 +149,6 @@ export default class Tree extends Container {
         child.setPoints();
       }
     });
-    // console.log(this);
-    // console.log(t.target[0]);
-    // console.log("update");
   };
 
   drawPoint(point) {
@@ -184,39 +162,40 @@ export default class Tree extends Container {
     this.addChild(pointFirst);
   }
 
+  createLines() {
+
+    this.children.forEach( parentNode => {
+      if (parentNode instanceof Node) {
+        parentNode.childs.forEach( IdChildNode => {
+          const childNode = this.children.find(
+            (elem) => elem.id === IdChildNode
+          );
+
+          const line = new Line(parentNode, childNode);
+          line.hide();
+          this.addChild(line);
+        });
+      }
+    });
+  }
+
+
   // createLines() {
   //   this.children.forEach((parentNode) => {
-  //     if (parentNode.childs.length) {
+  //     if ( (parentNode instanceof Node) && (parentNode.childs.length)) {
   //       parentNode.childs.forEach((IdChildNode) => {
   //         const childNode = this.children.find(
   //           (elem) => elem.id === IdChildNode
   //         );
 
-  //         const line = new Line(parentNode, childNode);
-  //         this.addChild(line);
+  //         if (childNode) {
+  //           const line = new Line(parentNode, childNode);
+  //           this.addChild(line);
+  //         }
+
+  //         return;
   //       });
   //     }
   //   });
-  //   console.log(this);
   // }
-
-
-  createLines() {
-    this.children.forEach((parentNode) => {
-      if ( (parentNode instanceof Node) && (parentNode.childs.length)) {
-        parentNode.childs.forEach((IdChildNode) => {
-          const childNode = this.children.find(
-            (elem) => elem.id === IdChildNode
-          );
-
-          if (childNode) {
-            const line = new Line(parentNode, childNode);
-            this.addChild(line);
-          }
-
-          return;
-        });
-      }
-    });
-  }
 }
