@@ -3,6 +3,7 @@ import { randomNumber } from "../../utils/helpers";
 import data from "../../custom-data/custom-data";
 import Node from "./node";
 import Line from "./Line";
+import { active } from "browser-sync";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics } = global.PIXI;
 
@@ -19,6 +20,8 @@ export default class Tree extends Container {
     this.contentWidth = contentWidth;
     this.contentHeight = contentHeight;
 
+    this.deletedNodes = [];
+
     this.center = {
       x: this._width / 2,
       y: this._height / 2,
@@ -32,6 +35,11 @@ export default class Tree extends Container {
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
 
+      if (!activeNode.childs.length) {
+        console.log(activeNode.childs);
+        this.deleteLines(this.selectedNode);
+      }
+        
       this.deleteNodes(this.selectedNode);
       this.selectedNode = activeNode;
 
@@ -58,22 +66,42 @@ export default class Tree extends Container {
 
 
   deleteNodes(deletedNode) {
+    this.deletedNodes = [];
     if (deletedNode.id === '0') return;
-    this.children.forEach( (child) => {
 
+    this.children.forEach( (child) => {
       if (child === deletedNode) {
+
         child.childs.forEach( (deletedChild) => {
           this.children.forEach( (child) => {
 
             if (child.id == deletedChild) {
-              child.delete();
+              this.deletedNodes.push(child);
+              this.removeChild(child);
             }
             return;
           });
-          
         })
+
       }
     });
+    console.log(this.deletedNodes);
+  }
+
+  deleteLines(deletedNode) {
+    if (deletedNode.id === '0') return;
+
+    this.deletedNodes.forEach( node => {
+      this.children.forEach( child => {
+        if ( child instanceof Line && child.childNode == node) {
+          this.removeChild(child);
+        }
+      })
+    });
+  }
+
+  createNodes() {
+    
   }
 
   drawFirst() {
@@ -92,9 +120,7 @@ export default class Tree extends Container {
   draw() {
 
     const { center, selectedNode } = this;
-    console.log(selectedNode.childs);
     const dataTitle = selectedNode;
-
 
     if (!dataTitle.childs) return;
 
@@ -111,9 +137,8 @@ export default class Tree extends Container {
       this.animateNode(node);
     });
 
-      // this.animateNode(node);
-    // }
-    console.log(this.children);
+    console.log(this);
+    this.createLines();
   }
 
   animateNode(node) {
@@ -175,19 +200,23 @@ export default class Tree extends Container {
   //   console.log(this);
   // }
 
+
   createLines() {
     this.children.forEach((parentNode) => {
-      if (parentNode.childs.length) {
+      if ( (parentNode instanceof Node) && (parentNode.childs.length)) {
         parentNode.childs.forEach((IdChildNode) => {
           const childNode = this.children.find(
             (elem) => elem.id === IdChildNode
           );
 
-          const line = new Line(parentNode, childNode);
-          this.addChild(line);
+          if (childNode) {
+            const line = new Line(parentNode, childNode);
+            this.addChild(line);
+          }
+
+          return;
         });
       }
     });
-    console.log(this);
   }
 }

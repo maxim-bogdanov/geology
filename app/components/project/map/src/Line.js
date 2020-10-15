@@ -12,37 +12,21 @@ export default class Line extends Container {
     this.childNode = childNode;
 
     this.graphics = new Graphics();
+    this.points = new Graphics();
+
     this.addChild(this.graphics);
+    this.addChild(this.points);
 
     this.setPoints();
   }
 
   updatePosition() {}
 
-  getPointCoord(node) {
-    const lineWidth = buttonStyle[node.styleType].rect.lineWidth;
-    const {
-      position: { x, y },
-      widthRect,
-    } = node;
-
-    return {
-      left: {
-        x: x + widthRect / 2 + lineWidth / 2,
-        y,
-      },
-      right: {
-        x: x - widthRect / 2 - lineWidth / 2,
-        y,
-      },
-    };
-  }
-
   setPoints() {
     const { parentNode, childNode } = this;
 
-    const childPoints = this.getPointCoord(childNode);
-    const parentPoints = this.getPointCoord(parentNode);
+    const childPoints = parentNode.getPointCoord();
+    const parentPoints = childNode.getPointCoord();
 
     const isLeft =
       parentPoints.left.x + parentPoints.right.x <
@@ -55,18 +39,6 @@ export default class Line extends Container {
 
     this.position.copyFrom(parentPoints[choice.first]);
 
-    const p = new Graphics();
-
-    p.beginFill(0xff0000);
-    p.drawCircle(
-      parentPoints[choice.first].x,
-      parentPoints[choice.first].y,
-      10
-    );
-    p.endFill();
-
-    this.addChild(p);
-
     const { x: sX, y: sY } = parentPoints[choice.first];
     const { x: eX, y: eY } = childPoints[choice.second];
 
@@ -77,8 +49,10 @@ export default class Line extends Container {
   }
 
   draw(secondPoint) {
-    const color = 0xffffff;
-    const { graphics } = this;
+    const color = 0xff0000;
+    const { graphics, points } = this;
+    graphics.clear();
+    points.clear();
 
     const controls = {
       bottom: {
@@ -90,17 +64,14 @@ export default class Line extends Container {
         y: secondPoint.y,
       },
     };
-    // const p = new Graphics();
 
-    // p.beginFill(0x0000ff);
-    // p.drawCircle(controls.bottom.x, controls.bottom.y, 10);
-    // p.drawCircle(controls.top.x, controls.top.y, 10);
-    // p.endFill();
-
-    // this.addChild(p);
+    // points.beginFill(0x0000ff);
+    // points.drawCircle(controls.bottom.x, controls.bottom.y, 10);
+    // points.drawCircle(controls.top.x, controls.top.y, 10);
+    // points.endFill();
 
     graphics
-      .lineStyle(4, 0xffffff, 1)
+      .lineStyle(4, color, 1)
       .moveTo(0, 0)
       .bezierCurveTo(
         controls.bottom.x,

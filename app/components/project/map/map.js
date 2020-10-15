@@ -37,21 +37,29 @@ class Map extends Plugin {
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
       contentWidth: 3000, // контента
-      contentHeight: 1900,
+      contentHeight: 1700,
     });
+
     const tree = new Tree({
       width: Map.WIDTH, // контейнера
       height: Map.HEIGHT,
       contentWidth: 3000, // контента
-      contentHeight: 1900,
+      contentHeight: 1700,
     });
+
+    this.tree = tree;
 
     app.stage.addChild(map);
     map.contentContainer.addChild(tree);
+    app.ticker.add(this.update, this);
 
     $element.append(app.view);
 
     this.resize();
+  }
+
+  update() {
+    this.tree.update();
   }
 
   resize() {
