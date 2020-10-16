@@ -243,7 +243,7 @@ export default class Tree extends Container {
       const node = new Node(dataTitle, coord, dataTitle.style, center);
 
       // if (id !== '0')
-      node.visible = false;
+      node.alpha = 0;
       // node.hide();
 
       this.addChild(node);
@@ -303,7 +303,7 @@ export default class Tree extends Container {
           const line = new Line(parentNode, childNode);
           parentNode.addParentLines(line);
           childNode.addChildLine(line);
-          line.visible = false;
+          line.alpha = 0;
           // line.hide();
           this.addChild(line);
         });

@@ -3,6 +3,7 @@ import data from "../../custom-data/custom-data";
 import { eventBus } from "../../utils/shared";
 import { buttonStyle } from "./nodeSettings";
 import { drawdash } from "../../utils/helpers";
+// import gsap from "gsap/gsap-core";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics, Text, BitmapText } = global.PIXI;
 
@@ -60,10 +61,18 @@ export default class Node extends Container {
   hide() {
     if (this.isHidden) return;
 
-    this.visible = false;
+    // if (!this.animationHideComplete)
+    //   gsap.to(this, {
+    //     duration: 1,
+    //     alpha: 0
+    //   });
+
+    // this.alpha = 0;
     this.isHidden = true;
 
     this.parentLines.forEach( line => {
+      // Promise.all
+      
       if (!line.isHidden)
         line.hide();
     });
@@ -73,10 +82,26 @@ export default class Node extends Container {
 
     this.animationHideComplete = false;
     
-    return new Promise((resolve) => {
-      this.animationHideComplete = true;
-      resolve();
+    this.hidePromise = new Promise((resolve) => {
+      this.hideResolve = resolve;
+      // this.animateHide();
     });
+    return this.hidePromise;
+  }
+
+  animateHide() {
+    gsap.to(this, {
+      duration: 1,
+      alpha: 0,
+      onComplete: this.onHideComplete,
+      callbackScope: this,
+      onCompleteParams: [this.hideResolve]
+    });
+  }
+  
+  onHideComplete(resolve) {
+    this.animationHideComplete = true;
+    resolve();
   }
 
   show() {
@@ -84,7 +109,13 @@ export default class Node extends Container {
 
     console.log(this.id);
 
-    this.visible = true;
+    if (!this.animationShowComplete)
+      gsap.to(this, {
+        duration: 1,
+        alpha: 1
+      });
+
+    // this.alpha = 1;
     this.isHidden = false;
 
     // this.parentLines.forEach( line => {

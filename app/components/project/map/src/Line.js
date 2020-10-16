@@ -30,7 +30,13 @@ export default class Line extends Container {
     if (this.isHidden) return;
 
     this.isHidden = true;
-    this.visible = false;
+    // this.alpha = 0;
+
+    // if (!this.animationHideComplete)
+    //   gsap.to(this, {
+    //     duration: 1,
+    //     alpha: 0
+    //   });
 
     if (!this.childNode.isHidden)
       this.childNode.hide();
@@ -40,21 +46,27 @@ export default class Line extends Container {
 
     this.animationHideComplete = false;
 
-    return new Promise( (resolve) => {
+
+    this.hidePromise = new Promise( (resolve) => {
+      this.hideResolve = resolve;
       this.animationHideComplete = true;
       resolve();
     });
+    return this.hidePromise;
   }
 
   show() {
     
     if (!this.isHidden) return;
 
-    console.log(this);
-
-
     this.isHidden = false;
-    this.visible = true;
+    // this.alpha = 1;
+
+    if (!this.animationShowComplete)
+      gsap.to(this, {
+        duration: 1,
+        alpha: 1
+      });
 
     if (this.childNode.isHidden)
       this.childNode.show();
@@ -62,10 +74,10 @@ export default class Line extends Container {
     if (this.parentNode.isHidden)
       this.parentNode.show();
 
-    this.animationHideComplete = false;
+    this.animationShowComplete = false;
 
     return new Promise((resolve) => {
-      this.animationHideComplete = true;
+      this.animationShowComplete = true;
       resolve();
     });
   }
