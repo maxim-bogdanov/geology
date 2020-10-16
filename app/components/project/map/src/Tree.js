@@ -24,9 +24,14 @@ export default class Tree extends Container {
       y: this._height / 2,
     };
 
-    this.selectedNode = this.children[0];
+
     this.draw();
+   
+    this.selectedNode = this.children[0];
+    this.selectedNode.activate();
+
     this.createLines();
+    this.show();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
 
@@ -36,9 +41,14 @@ export default class Tree extends Container {
       // }
         
       // this.deleteNodes(this.selectedNode);
+      this.hideNodes();
+      this.hideLines();
+
       this.selectedNode = activeNode;
-      this.activateNodes();
+      
       this.activateLines();
+      this.activateNodes();
+ 
 
       // if (this.selectedNode.id !== '0') {
       //   this.draw();
@@ -61,46 +71,85 @@ export default class Tree extends Container {
     return this._selectedNode;
   }
 
+  show() {
+    
+    this.activateNodes();
+    this.activateLines();
+  }
+
 
   activateNodes() {
-    const node = this.selectedNode;
-    this.activatedNodes = [];
-    if (node.id === '0') return;
+    // const node = this.selectedNode;
+    // this.activatedNodes = [];
 
-    this.children.forEach( (child) => {
-      if (child === node) {
+    // this.children.forEach( (child) => {
+    //   if (child === node) {
 
-        child.childs.forEach( (activatedChild) => {
-          this.children.forEach( (child) => {
+    //     child.childs.forEach( (activatedChild) => {
+    //       this.children.forEach( (child) => {
 
-            if (child.id == activatedChild) {
-              this.activatedNodes.push(child);
-              child.activate();
-            }
-            return;
-          });
-        })
-      }
+    //         if (child.id == activatedChild) {
+    //           this.activatedNodes.push(child);
+    //           child.activate();
+    //         }
+    //         return;
+    //       });
+    //     })
+    //   }
+    // });
+
+    const node = this.selectedNode; 
+    node.lines.forEach( line => {
+      line.childNode.activate();
     });
   }
 
 
 
   activateLines() {
-    const node = this.selectedNode;
-    if (node.id === '0') return;
+    // const node = this.selectedNode;
+    // this.activatedLines = [];
+    // // if (node.id === '0') return;
 
-    this.activatedNodes.forEach( node => {
-      this.children.forEach( child => {
-        if ( child instanceof Line && child.childNode == node) {
-          child.activate();
-        }
-      })
+    // this.activatedNodes.forEach( node => {
+    //   this.children.forEach( child => {
+    //     if ( child instanceof Line && child.childNode == node) {
+    //       this.activatedLines.push(child);
+    //       child.activate();
+    //     }
+    //   })
+    // });
+    const node = this.selectedNode; 
+    node.lines.forEach( line => {
+      line.activate();
     });
   }
 
-  createNodes() {
-    
+  hideNodes() {
+    // const node = this.selectedNode;
+    // if (node.id === '0') return;
+
+    // this.activatedNodes.forEach( node => node.hide() );
+
+    const node = this.selectedNode; 
+    if (node.id === '0') return;
+    node.lines.forEach( line => {
+      const node = line.childNode;
+      node.hide();
+    });
+  }
+
+
+  hideLines() {
+    // const node = this.selectedNode;
+    // if (node.id === '0') return;
+
+    // this.activatedLines.forEach( line => line.hide() );
+    const node = this.selectedNode;
+    if (node.id === '0') return;
+    node.lines.forEach( line => {
+      line.hide();
+    });
   }
 
 
@@ -116,7 +165,9 @@ export default class Tree extends Container {
       }
       const node = new Node(dataTitle, coord, dataTitle.style, center);
 
-      node.hide();
+      // if (id !== '0')
+        node.hide();
+
       this.addChild(node);
       this.animateNode(node);
     }
@@ -172,11 +223,13 @@ export default class Tree extends Container {
           );
 
           const line = new Line(parentNode, childNode);
+          parentNode.addLines(line);
           line.hide();
           this.addChild(line);
         });
       }
     });
+    console.log(this)
   }
 
 

@@ -20,6 +20,7 @@ export default class Node extends Container {
     this.styleType = styleType;
     this.id = id;
     this.defaultPosition = coord;
+    this.lines = [];
     // this.radius = 50;
 
     this.firstMaskContainer = new Container();
@@ -95,6 +96,10 @@ export default class Node extends Container {
         y,
       },
     };
+  }
+
+  addLines(line) {
+    this.lines.push(line);
   }
 
   drawPoints() {
