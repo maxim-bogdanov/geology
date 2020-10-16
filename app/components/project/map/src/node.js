@@ -58,27 +58,50 @@ export default class Node extends Container {
 
 
   hide() {
+    if (this.isHidden) return;
+
+    this.visible = false;
+    this.isHidden = true;
+
     this.parentLines.forEach( line => {
       if (!line.isHidden)
         line.hide();
     });
 
-    this.isHidden = true;
-    return new Promise(function (resolve) {
+    if (this.childLine && !this.childLine.isHidden)
+      this.childLine.hide();
+
+    this.animationHideComplete = false;
+    
+    return new Promise((resolve) => {
+      this.animationHideComplete = true;
       resolve();
     });
   }
 
   show() {
-    this.parentLines.forEach( line => {
-      if (line.isHidden)
-        line.show();
-    });
+    if (!this.isHidden) return;
 
+    console.log(this.id);
+
+    this.visible = true;
     this.isHidden = false;
-    return new Promise(function (resolve) {
+
+    // this.parentLines.forEach( line => {
+    //   if (line.isHidden)
+    //     line.show();
+    // });
+
+    if (this.childLine && this.childLine.isHidden)
+      this.childLine.show();
+    
+    this.animationShowComplete = false;
+
+    return new Promise((resolve) => {
+      this.animationShowComplete = true;
       resolve();
     });
+
   }
 
   setPoints() {

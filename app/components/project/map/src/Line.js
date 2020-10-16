@@ -18,6 +18,8 @@ export default class Line extends Container {
     this.addChild(this.points);
 
     this.setPoints();
+
+    this.isHidden = true;
     // this.hide();
   }
 
@@ -25,23 +27,45 @@ export default class Line extends Container {
 
   
   hide() {
+    if (this.isHidden) return;
+
+    this.isHidden = true;
+    this.visible = false;
 
     if (!this.childNode.isHidden)
       this.childNode.hide();
 
-    this.isHidden = true;
-    return new Promise(function (resolve) {
+    if (!this.parentNode.isHidden)
+      this.childNode.hide();
+
+    this.animationHideComplete = false;
+
+    return new Promise( (resolve) => {
+      this.animationHideComplete = true;
       resolve();
     });
   }
 
   show() {
+    
+    if (!this.isHidden) return;
+
+    console.log(this);
+
+
+    this.isHidden = false;
+    this.visible = true;
 
     if (this.childNode.isHidden)
       this.childNode.show();
 
-    this.isHidden = false;
-    return new Promise(function (resolve) {
+    if (this.parentNode.isHidden)
+      this.parentNode.show();
+
+    this.animationHideComplete = false;
+
+    return new Promise((resolve) => {
+      this.animationHideComplete = true;
       resolve();
     });
   }

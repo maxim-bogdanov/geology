@@ -31,7 +31,7 @@ export default class Tree extends Container {
     this.createLines();
 
     this.currentNode = this.children[0];
-    // this.selectedNode = this.children[0];
+    this.selectedNode = this.children[0];
     // this.selectedNode.show();
 
 
@@ -62,8 +62,17 @@ export default class Tree extends Container {
  
   }
 
+  draw() {
+    const node = this.children[30];
+    const deletedNode = node.childLine.parentNode;
+    node.show();
 
-  draw(currentNode) {
+    setTimeout(() => {
+      deletedNode.hide();
+    }, 1500);
+  }
+
+  draw1(currentNode) {
     // if (this.selectedNode.id === '0') {
     currentNode.show().then( () => {
       // if (currentNode.id)
@@ -73,7 +82,7 @@ export default class Tree extends Container {
           const node = line.childNode;
                               
           // if (node === this.selectedNode) {
-           line.show().then( () => { this.draw(node) });
+          line.show().then( () => { this.draw(node) });
           // } 
           // else {
           //   line.hide().then( () => {this.draw(node)});
@@ -234,7 +243,8 @@ export default class Tree extends Container {
       const node = new Node(dataTitle, coord, dataTitle.style, center);
 
       // if (id !== '0')
-        node.hide();
+      node.visible = false;
+      // node.hide();
 
       this.addChild(node);
       this.animateNode(node);
@@ -293,7 +303,8 @@ export default class Tree extends Container {
           const line = new Line(parentNode, childNode);
           parentNode.addParentLines(line);
           childNode.addChildLine(line);
-          line.hide();
+          line.visible = false;
+          // line.hide();
           this.addChild(line);
         });
       }
