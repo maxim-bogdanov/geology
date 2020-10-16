@@ -20,7 +20,10 @@ export default class Node extends Container {
     this.styleType = styleType;
     this.id = id;
     this.defaultPosition = coord;
-    this.lines = [];
+    this.parentLines = [];
+    this.childLine;
+    this.isHidden = true;
+
     // this.radius = 50;
 
     this.firstMaskContainer = new Container();
@@ -52,12 +55,30 @@ export default class Node extends Container {
     this.text.y = -this.heightRect / 2 + buttonStyle[styleType].rect.top;
   }
 
+
+
   hide() {
-    this.visible = false;
+    this.parentLines.forEach( line => {
+      if (!line.isHidden)
+        line.hide();
+    });
+
+    this.isHidden = true;
+    return new Promise(function (resolve) {
+      resolve();
+    });
   }
 
-  activate() {
-    this.visible = true;
+  show() {
+    this.parentLines.forEach( line => {
+      if (line.isHidden)
+        line.show();
+    });
+
+    this.isHidden = false;
+    return new Promise(function (resolve) {
+      resolve();
+    });
   }
 
   setPoints() {
@@ -98,8 +119,11 @@ export default class Node extends Container {
     };
   }
 
-  addLines(line) {
-    this.lines.push(line);
+  addParentLines(line) {
+    this.parentLines.push(line);
+  }
+  addChildLine(line) {
+    this.childLine = line;
   }
 
   drawPoints() {

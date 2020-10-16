@@ -25,11 +25,25 @@ export default class Line extends Container {
 
   
   hide() {
-    this.visible = false;
+
+    if (!this.childNode.isHidden)
+      this.childNode.hide();
+
+    this.isHidden = true;
+    return new Promise(function (resolve) {
+      resolve();
+    });
   }
 
-  activate() {
-    this.visible = true;
+  show() {
+
+    if (this.childNode.isHidden)
+      this.childNode.show();
+
+    this.isHidden = false;
+    return new Promise(function (resolve) {
+      resolve();
+    });
   }
 
   setPoints() {
