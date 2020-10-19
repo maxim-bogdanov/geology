@@ -3,6 +3,7 @@ import data from "../../custom-data/custom-data";
 import { eventBus } from "../../utils/shared";
 import { buttonStyle } from "./nodeSettings";
 import { drawdash } from "../../utils/helpers";
+import gsap from "gsap";
 // import gsap from "gsap/gsap-core";
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics, Text, BitmapText } = global.PIXI;
@@ -24,6 +25,14 @@ export default class Node extends Container {
     this.parentLines = [];
     this.childLine;
     this.isHidden = true;
+
+    this.animationShowComplete = true;
+    this.animationHideComplete = true;
+
+    this.promiseData = {
+      show: {},
+      hide: {},
+    };
 
     // this.radius = 50;
 
@@ -57,43 +66,54 @@ export default class Node extends Container {
   }
 
 
-
   hide() {
     if (this.isHidden) return;
 
     this.isHidden = true;
 
-    this.hidePromise = new Promise((resolve) => {
-      this.hideResolve = resolve;
+    this.promiseData.hide.promise = new Promise( (resolve, reject) => {
+
+      this.promiseData.hide.resolve = resolve;
+      this.promiseData.hide.reject = reject;
     });
 
+    if (!this.animationShowComplete) {
+      console.log('animate node hide');
+      this.promiseData.show.reject();
+    }
+
     this.parentLines.forEach( line => {
-      if (!line.isHidden)
-        line.hide();
+      line.hide();
     });
 
     if (!this.promiseLines) 
-      this.promiseLines = this.parentLines.map( line => line.hidePromise);
-    Promise.all(this.promiseLines).then(() => {
-      this.animateHide();
-    });
+      this.promiseLines = this.parentLines.map( line => line.promiseData.hide.promise);
+
+    this.animationHideComplete = false;
+      
+    console.log(this.promiseLines);
+    console.log(this.parentLines);
+    Promise.all(this.promiseLines).then(
+      () => {
+        this.animateHide();
+      }
+    );
 
     if (this.childLine && !this.childLine.isHidden) 
       this.childLine.hide();
 
-    this.animationHideComplete = false;
-    
-
-    return this.hidePromise;
+    return this.promiseData.hide.promise;
   }
 
   animateHide() {
+    console.log('hide node',this);
+    gsap.killTweensOf(this);
     gsap.to(this, {
       duration: 1,
       alpha: 0,
       onComplete: this.onHideComplete,
       callbackScope: this,
-      onCompleteParams: [this.hideResolve]
+      onCompleteParams: [this.promiseData.hide.resolve]
     });
   }
   
@@ -107,42 +127,53 @@ export default class Node extends Container {
 
     this.isHidden = false;
 
-    this.showPromise = new Promise((resolve) => {
-      this.showResolve = resolve;
+    this.promiseData.show.promise = new Promise((resolve, reject) => {
+      this.promiseData.show.resolve = resolve;
+      this.promiseData.show.reject = reject;
     });
 
-    this.parentLines.forEach( line => {
-      if (line.isHidden)
-        line.show();
-    });
+    if (!this.animationHideComplete) {
+      console.log('animate node show');
+      this.promiseData.hide.reject();
+    }
+
+    // this.parentLines.forEach( line => {
+    //   if (line.isHidden)
+    //     line.show();
+    // });
+    this.animationShowComplete = false;
 
     if (this.childLine && this.childLine.isHidden) {
       this.childLine.show();
 
       // console.log(this.childLine.showPromise)
-      this.childLine.showPromise.then( () => {
-        this.animateShow();
-      });
+      this.childLine.promiseData.show.promise.then(
+        () => {
+          this.animateShow();
+        }
+        // () => {
+        //   this.animateHide();
+        // }
+      );
     } else {
       this.animateShow();
     }
 
     
-
     
-    this.animationShowComplete = false;
 
-    return this.showPromise;
+    return this.promiseData.show.promise;
   }
 
   animateShow() {
     console.log('animateShow');
+    gsap.killTweensOf(this);
     gsap.to(this, {
       duration: 1,
       alpha: 1,
       onComplete: this.onShowComplete,
       callbackScope: this,
-      onCompleteParams: [this.showResolve]
+      onCompleteParams: [this.promiseData.show.resolve]
     });
   }
   

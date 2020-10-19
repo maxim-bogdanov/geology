@@ -33,6 +33,7 @@ export default class Tree extends Container {
     this.currentNode = this.children[0];
     this.selectedNode = this.children[0];
     // this.selectedNode.show();
+    this.draw();
 
 
     this.show();
@@ -64,13 +65,37 @@ export default class Tree extends Container {
   }
 
   draw() {
-    // const node = this.children[30];
-    // const deletedNode = node.childLine.parentNode;
-    this.selectedNode.show();
-    
-    // setTimeout(() => {
-    //   // deletedNode.hide();
-    // }, 1500);
+    const node = this.selectedNode;
+    const main = this.children[0];
+
+    this.children.forEach( child => {
+      if (child instanceof Line) return;
+      
+      // выбранный элемент
+      if (child === node || child === this.children[0]) {
+        node.show();
+        return;
+      }
+
+      // ребенок 
+      const foundChild = node.parentLines.find( line => line.childNode === child );
+      if (foundChild) {
+
+        foundChild.childNode.show();
+        return;
+      }
+
+      // первые дети 
+      const foundChildofMain = main.parentLines.find( line => line.childNode === child );
+      if (foundChildofMain) {
+        foundChildofMain.show();
+        return;
+      }
+
+      child.hide();
+      
+    });
+      
   }
 
   draw1(currentNode) {
@@ -136,7 +161,7 @@ export default class Tree extends Container {
     const currentNode = this.children[0];
     // if (node !== currentNode) this.clearDraw();
     this._selectedNode = node;
-    this.draw(currentNode);
+    // this.draw(currentNode);
 
     this.children.forEach((_node) => {
       const isSame = _node === node;

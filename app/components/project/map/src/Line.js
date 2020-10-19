@@ -1,3 +1,4 @@
+import { reject } from "lodash";
 import data from "../../custom-data/custom-data";
 import { eventBus } from "../../utils/shared";
 import { buttonStyle } from "./nodeSettings";
@@ -19,6 +20,13 @@ export default class Line extends Container {
 
     this.setPoints();
 
+    this.promiseData = {
+      show: {},
+      hide: {},
+    };
+
+    this.animationShowComplete = true;
+    this.animationHideComplete = true;
     this.isHidden = true;
     // this.hide();
   }
@@ -27,34 +35,41 @@ export default class Line extends Container {
 
   
   hide() {
+    console.log(this.animationShowComplete, this.animationHideComplete, 'hide')
+
     if (this.isHidden) return;
 
     this.isHidden = true;
-
-    this.hidePromise = new Promise( (resolve) => {
-      this.hideResolve = resolve;
+  
+    this.promiseData.hide.promise = new Promise( (resolve, reject) => {
+      this.promiseData.hide.resolve = resolve;
+      this.promiseData.hide.reject = reject;
     });
-    
+
+    if (!this.animationShowComplete) {
+      this.promiseData.show.reject();
+    }
+
     this.childNode.hide();
-
-    this.childNode.hidePromise.then( () => {
-      this.animateHide();
-    });
+    // this.parentNode.hide();
 
     this.animationHideComplete = false;
 
+    this.childNode.promiseData.hide.promise.then( () => {
+      this.animateHide();
+    });
 
-
-    return this.hidePromise;
+    return this.promiseData.hide.promise;
   }
 
   animateHide() {
+    console.log('hide line')
     gsap.to(this, {
       duration: 1,
       alpha: 0,
       onComplete: this.onHideComplete,
       callbackScope: this,
-      onCompleteParams: [this.hideResolve]
+      onCompleteParams: [this.promiseData.hide.resolve]
     });
   }
   
@@ -64,31 +79,33 @@ export default class Line extends Container {
   }
 
   show() {
-    
     if (!this.isHidden) return;
 
     this.isHidden = false;
 
-    this.showPromise = new Promise((resolve) => {
-      this.showResolve = resolve;
+    this.promiseData.show.promise = new Promise((resolve, reject) => {
+      this.promiseData.show.resolve = resolve;
+      this.promiseData.show.reject = reject;
     });
 
+    if (!this.animationHideComplete) {
+      this.promiseData.hide.reject();
+    }
     
-
     // if (this.parentNode.isHidden)
-    // this.parentNode.show();
+    this.parentNode.show();
 
-    console.log(this.parentNode.showPromise)
-
-    this.parentNode.showPromise.then( () => {
-      this.animateShow();
-      // this.childNode.show();
-    });
+    // console.log(this.parentNode.showPromise)
 
     this.animationShowComplete = false;
 
+    this.parentNode.promiseData.show.promise.then( () => {
+      this.animateShow();
+      // () => this.animateHide()
+      // this.childNode.show();
+    });
 
-    return this.showPromise;
+    return this.promiseData.show.promise;
   }
 
   animateShow() {
@@ -97,7 +114,7 @@ export default class Line extends Container {
       alpha: 1,
       onComplete: this.onShowComplete,
       callbackScope: this,
-      onCompleteParams: [this.showResolve]
+      onCompleteParams: [this.promiseData.show.resolve]
     });
   }
   
