@@ -48,8 +48,9 @@ export default class Tree extends Container {
       // this.hideNodes();
       // this.hideLines();
 
-      this.selectedNode = activeNode;
 
+      this.selectedNode = activeNode;
+      this.draw();
       // this.activateLines();
       // this.activateNodes();
  
@@ -63,13 +64,13 @@ export default class Tree extends Container {
   }
 
   draw() {
-    const node = this.children[30];
-    const deletedNode = node.childLine.parentNode;
-    node.show();
-
-    setTimeout(() => {
-      deletedNode.hide();
-    }, 1500);
+    // const node = this.children[30];
+    // const deletedNode = node.childLine.parentNode;
+    this.selectedNode.show();
+    
+    // setTimeout(() => {
+    //   // deletedNode.hide();
+    // }, 1500);
   }
 
   draw1(currentNode) {

@@ -30,29 +30,37 @@ export default class Line extends Container {
     if (this.isHidden) return;
 
     this.isHidden = true;
-    // this.alpha = 0;
 
-    // if (!this.animationHideComplete)
-    //   gsap.to(this, {
-    //     duration: 1,
-    //     alpha: 0
-    //   });
+    this.hidePromise = new Promise( (resolve) => {
+      this.hideResolve = resolve;
+    });
+    
+    this.childNode.hide();
 
-    if (!this.childNode.isHidden)
-      this.childNode.hide();
-
-    if (!this.parentNode.isHidden)
-      this.childNode.hide();
+    this.childNode.hidePromise.then( () => {
+      this.animateHide();
+    });
 
     this.animationHideComplete = false;
 
 
-    this.hidePromise = new Promise( (resolve) => {
-      this.hideResolve = resolve;
-      this.animationHideComplete = true;
-      resolve();
-    });
+
     return this.hidePromise;
+  }
+
+  animateHide() {
+    gsap.to(this, {
+      duration: 1,
+      alpha: 0,
+      onComplete: this.onHideComplete,
+      callbackScope: this,
+      onCompleteParams: [this.hideResolve]
+    });
+  }
+  
+  onHideComplete(resolve) {
+    this.animationHideComplete = true;
+    resolve();
   }
 
   show() {
@@ -60,26 +68,42 @@ export default class Line extends Container {
     if (!this.isHidden) return;
 
     this.isHidden = false;
-    // this.alpha = 1;
 
-    if (!this.animationShowComplete)
-      gsap.to(this, {
-        duration: 1,
-        alpha: 1
-      });
+    this.showPromise = new Promise((resolve) => {
+      this.showResolve = resolve;
+    });
 
-    if (this.childNode.isHidden)
-      this.childNode.show();
+    
 
-    if (this.parentNode.isHidden)
-      this.parentNode.show();
+    // if (this.parentNode.isHidden)
+    // this.parentNode.show();
+
+    console.log(this.parentNode.showPromise)
+
+    this.parentNode.showPromise.then( () => {
+      this.animateShow();
+      // this.childNode.show();
+    });
 
     this.animationShowComplete = false;
 
-    return new Promise((resolve) => {
-      this.animationShowComplete = true;
-      resolve();
+
+    return this.showPromise;
+  }
+
+  animateShow() {
+    gsap.to(this, {
+      duration: 1,
+      alpha: 1,
+      onComplete: this.onShowComplete,
+      callbackScope: this,
+      onCompleteParams: [this.showResolve]
     });
+  }
+  
+  onShowComplete(resolve) {
+    this.animationShowComplete = true;
+    resolve();
   }
 
   setPoints() {
