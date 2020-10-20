@@ -32,33 +32,11 @@ export default class Tree extends Container {
 
     this.currentNode = this.children[0];
     this.selectedNode = this.children[0];
-    // this.selectedNode.show();
     this.draw();
 
-
-    this.show();
-
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
-
-      // if (!activeNode.childs.length) {
-      //   console.log(activeNode.childs);
-      //   this.deleteLines(this.selectedNode);
-      // }
-        
-      // this.deleteNodes(this.selectedNode);
-      // this.hideNodes();
-      // this.hideLines();
-
-
       this.selectedNode = activeNode;
       this.draw();
-      // this.activateLines();
-      // this.activateNodes();
- 
-
-      // if (this.selectedNode.id !== '0') {
-      //   this.createNodes();
-      // }
     });
 
  
@@ -79,14 +57,15 @@ export default class Tree extends Container {
 
       // ребенок 
       const foundChild = node.parentLines.find( line => line.childNode === child );
-      if (foundChild) {
 
+      if (foundChild) {
         foundChild.childNode.show();
         return;
       }
 
       // первые дети 
       const foundChildofMain = main.parentLines.find( line => line.childNode === child );
+
       if (foundChildofMain) {
         foundChildofMain.show();
         return;
@@ -95,67 +74,11 @@ export default class Tree extends Container {
       child.hide();
       
     });
-      
   }
 
-  draw1(currentNode) {
-    // if (this.selectedNode.id === '0') {
-    currentNode.show().then( () => {
-      // if (currentNode.id)
-      Promise.all(currentNode.parentLines).then( lines => {
-        lines.forEach( line => {
-          // if 
-          const node = line.childNode;
-                              
-          // if (node === this.selectedNode) {
-          line.show().then( () => { this.draw(node) });
-          // } 
-          // else {
-          //   line.hide().then( () => {this.draw(node)});
-          // }
-          
-        });
-      });
-    })
-    // this.activateNodes();
-    // this.activateLines();
-    // return;
-    // }
-    // let isFound = false;
-
-    // currentNode.lines.forEach( line => {
-    //   if (line.childNode === this.selectedNode) {
-    //     if (!line.childNode.childs.length) {
-    //       console.log('открытое');
-    //       isFound = true;
-    //       return;
-    //     }
-    //     this.hideLines();
-    //     this.hideNodes();
-
-    //     this.activateLines();
-    //     this.activateNodes();
-
-    //     isFound = true;
-    //     return;
-    //   }
-    //   if (isFound) return;
-
-    //   currentNode = line.childNode;
-    //   this.draw(currentNode);
-    // });
-    // if (isFound) return;
-    // console.log('end')
-  }
-
-  clearDraw() {
-    this.hideLines();
-    this.hideNodes();
-  }
   
 
   set selectedNode(node) {
-    // console.log(node);
     if (node == this._selectedNode) return;
     
     const currentNode = this.children[0];
@@ -285,6 +208,7 @@ export default class Tree extends Container {
 
     this.tweenProperty(node, "x", -dx, dx);
     this.tweenProperty(node, "y", -dy, dy);
+
   }
 
   tweenProperty(target, prop, min, max) {
@@ -335,7 +259,7 @@ export default class Tree extends Container {
         });
       }
     });
-    console.log(this)
+    console.log(this);
   }
 
 }

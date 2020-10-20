@@ -92,17 +92,12 @@ export default class Line extends Container {
       this.promiseData.hide.reject();
     }
     
-    // if (this.parentNode.isHidden)
     this.parentNode.show();
-
-    // console.log(this.parentNode.showPromise)
 
     this.animationShowComplete = false;
 
     this.parentNode.promiseData.show.promise.then( () => {
       this.animateShow();
-      // () => this.animateHide()
-      // this.childNode.show();
     });
 
     return this.promiseData.show.promise;

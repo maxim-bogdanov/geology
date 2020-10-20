@@ -107,7 +107,7 @@ export default class Node extends Container {
 
   animateHide() {
     console.log('hide node',this);
-    gsap.killTweensOf(this);
+    // gsap.killTweensOf(this);
     gsap.to(this, {
       duration: 1,
       alpha: 0,
@@ -167,7 +167,7 @@ export default class Node extends Container {
 
   animateShow() {
     console.log('animateShow');
-    gsap.killTweensOf(this);
+    // gsap.killTweensOf(this);
     gsap.to(this, {
       duration: 1,
       alpha: 1,
@@ -612,9 +612,24 @@ export default class Node extends Container {
     this.drawPoints();
 
     this.on("pointerdown", () => {
+
+      let childOffset = {
+        x: 0,
+        y: 0
+      };
+      
+      if (!this.childs.length) {
+        const sign = this.id[0] === '-' ? -1 : 1;
+        console.log(sign)
+        childOffset = {
+          x: -200 * sign,
+          y: -300,
+        }
+      }
+
       const coordPoint = {
-        x: this.center.x - this.position.x,
-        y: this.center.y - this.position.y,
+        x: this.center.x - this.position.x + childOffset.x,
+        y: this.center.y - this.position.y + childOffset.y,
       };
 
       $(eventBus).trigger("change-focus", [coordPoint, this]);
