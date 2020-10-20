@@ -2,6 +2,7 @@ import { reject } from "lodash";
 import data from "../../custom-data/custom-data";
 import { eventBus } from "../../utils/shared";
 import { buttonStyle } from "./nodeSettings";
+import BezierLine from './Bezier';
 // import { eventBus } from '../../utils/shared';
 const { Container, Graphics, Text, BitmapText } = global.PIXI;
 
@@ -18,6 +19,10 @@ export default class Line extends Container {
     this.addChild(this.graphics);
     this.addChild(this.points);
 
+    this.curve = new BezierLine();
+    this.addChild(this.curve);
+    this.countTicker = 0;
+
     this.setPoints();
 
     this.promiseData = {
@@ -28,6 +33,8 @@ export default class Line extends Container {
     this.animationShowComplete = true;
     this.animationHideComplete = true;
     this.isHidden = true;
+
+
     // this.hide();
   }
 
@@ -63,10 +70,10 @@ export default class Line extends Container {
   }
 
   animateHide() {
-    console.log('hide line')
-    gsap.to(this, {
+    this.countTicker = 0;
+    gsap.to(this.curve, {
       duration: 1,
-      alpha: 0,
+      progress: 0,
       onComplete: this.onHideComplete,
       callbackScope: this,
       onCompleteParams: [this.promiseData.hide.resolve]
@@ -104,14 +111,16 @@ export default class Line extends Container {
   }
 
   animateShow() {
-    gsap.to(this, {
+    this.countTicker = 0;
+    gsap.to(this.curve, {
       duration: 1,
-      alpha: 1,
+      progress: 1,
       onComplete: this.onShowComplete,
       callbackScope: this,
       onCompleteParams: [this.promiseData.show.resolve]
     });
   }
+
   
   onShowComplete(resolve) {
     this.animationShowComplete = true;
@@ -121,8 +130,8 @@ export default class Line extends Container {
   setPoints() {
     const { parentNode, childNode } = this;
 
-    const childPoints = parentNode.getPointCoord();
-    const parentPoints = childNode.getPointCoord();
+    const childPoints = childNode.getPointCoord();
+    const parentPoints = parentNode.getPointCoord();
 
     const isLeft =
       parentPoints.left.x + parentPoints.right.x <
@@ -138,6 +147,8 @@ export default class Line extends Container {
     const { x: sX, y: sY } = parentPoints[choice.first];
     const { x: eX, y: eY } = childPoints[choice.second];
 
+
+
     this.draw({
       x: eX - sX,
       y: eY - sY,
@@ -147,8 +158,8 @@ export default class Line extends Container {
   draw(secondPoint) {
     const color = 0xff0000;
     const { graphics, points } = this;
-    graphics.clear();
-    points.clear();
+    // graphics.clear();
+    // points.clear();
 
     const controls = {
       bottom: {
@@ -166,17 +177,46 @@ export default class Line extends Container {
     // points.drawCircle(controls.top.x, controls.top.y, 10);
     // points.endFill();
 
-    graphics
-      .lineStyle(4, color, 1)
-      .moveTo(0, 0)
-      .bezierCurveTo(
-        controls.bottom.x,
-        controls.bottom.y,
-        controls.top.x,
-        controls.top.y,
-        secondPoint.x,
-        secondPoint.y
-      );
+    // var Bezier = require('bezier-js');
+    // console.log(Bezier)
+
+    const coordBezier = {
+      x0: 0,
+      y0: 0,
+      x1: controls.bottom.x,
+      y1: controls.bottom.y,
+      x2: controls.top.x,
+      y2: controls.top.y,
+      x3: secondPoint.x,
+      y3: secondPoint.y
+    }
+    this.coordBezier = coordBezier;
+    this.curve.changeData(coordBezier);
+    // this.curve.progress = 1;
+    this.curve.draw();
+
+    // if (!this.isHidden)
+      // this.curve.draw(coordBezier);
+
+
+    // curve.draw();
+    // console.log(curve.length())
+    // curve.draw();
+    // console.log(curve.length());
+    // curve.drawSkeleton(curve);
+    // curve.drawCurve(curve);
+
+    // graphics
+    //   .lineStyle(4, color, 1)
+    //   .moveTo(0, 0)
+    //   .bezierCurveTo(
+    //     controls.bottom.x,
+    //     controls.bottom.y,
+    //     controls.top.x,
+    //     controls.top.y,
+    //     secondPoint.x,
+    //     secondPoint.y
+    //   );
     // .lineTo(secondPoint.x, secondPoint.y);
   }
 }

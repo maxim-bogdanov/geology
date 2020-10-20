@@ -253,7 +253,7 @@ export default class Tree extends Container {
           const line = new Line(parentNode, childNode);
           parentNode.addParentLines(line);
           childNode.addChildLine(line);
-          line.alpha = 0;
+          // line.alpha = 0;
           // line.hide();
           this.addChild(line);
         });

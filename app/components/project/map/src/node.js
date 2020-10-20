@@ -620,7 +620,6 @@ export default class Node extends Container {
       
       if (!this.childs.length) {
         const sign = this.id[0] === '-' ? -1 : 1;
-        console.log(sign)
         childOffset = {
           x: -200 * sign,
           y: -300,
