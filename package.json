@@ -30,8 +30,7 @@
     "eslint-check": "eslint --print-config . | eslint-config-prettier-check"
   },
   "husky": {
-    "hooks": {
-    }
+    "hooks": {}
   },
   "#electron": {
     "devDependencies": {
@@ -135,6 +134,7 @@
     ]
   },
   "dependencies": {
+    "bezier-js": "^2.6.1",
     "gsap": "^3.5.1",
     "handlebars": "latest",
     "jquery": "latest",
