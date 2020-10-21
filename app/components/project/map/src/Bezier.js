@@ -9,21 +9,21 @@ export default class BezierLine extends Graphics {
 
   constructor() {
     super();
-    this.lineStyle(4, 0xff0000, 1);
     this.progress = 0;
+    this.lastProgress = 0;
   }
   
 
   draw() {
 
-    const {curveT} = this;
+    const {curve} = this;
     this
       .clear()
       .lineStyle(4, 0xff0000, 1);
 
     for (let t1 = 0; t1 < this.progress; t1 += BezierLine.STEP) {
-      const point1 = curveT.get(t1);     
-      const point2 = curveT.get(Math.min(t1 + BezierLine.STEP, this.progress));
+      const point1 = curve.get(t1);     
+      const point2 = curve.get(Math.min(t1 + BezierLine.STEP, this.progress));
 
       this
         .moveTo(point1.x, point1.y)
@@ -33,6 +33,7 @@ export default class BezierLine extends Graphics {
   }
 
   set progress(_progress) {
+    this.lastProgress = this._progress;
     this._progress = _progress;
     // this.draw();
   }

@@ -42,8 +42,6 @@ export default class Line extends Container {
 
   
   hide() {
-    console.log(this.animationShowComplete, this.animationHideComplete, 'hide')
-
     if (this.isHidden) return;
 
     this.isHidden = true;
@@ -53,8 +51,12 @@ export default class Line extends Container {
       this.promiseData.hide.reject = reject;
     });
 
+
+
     if (!this.animationShowComplete) {
-      this.promiseData.show.reject();
+      this.promiseData.show.reject(false);
+      this.animationShowComplete = true;
+      // gsap.killTweensOf(this.curve);
     }
 
     this.childNode.hide();
@@ -70,9 +72,10 @@ export default class Line extends Container {
   }
 
   animateHide() {
+    gsap.killTweensOf(this.curve);
     this.countTicker = 0;
     gsap.to(this.curve, {
-      duration: 1,
+      duration: this.curve.progress,
       progress: 0,
       onComplete: this.onHideComplete,
       callbackScope: this,
@@ -82,7 +85,7 @@ export default class Line extends Container {
   
   onHideComplete(resolve) {
     this.animationHideComplete = true;
-    resolve();
+    resolve(true);
   }
 
   show() {
@@ -95,8 +98,11 @@ export default class Line extends Container {
       this.promiseData.show.reject = reject;
     });
 
+
     if (!this.animationHideComplete) {
-      this.promiseData.hide.reject();
+      this.promiseData.hide.reject(false);
+      // gsap.killTweensOf(this.curve);
+      this.animationHideComplete = true;
     }
     
     this.parentNode.show();
@@ -111,9 +117,9 @@ export default class Line extends Container {
   }
 
   animateShow() {
-    this.countTicker = 0;
+    gsap.killTweensOf(this.curve);
     gsap.to(this.curve, {
-      duration: 1,
+      duration: 1 - this.curve.progress,
       progress: 1,
       onComplete: this.onShowComplete,
       callbackScope: this,
@@ -124,7 +130,7 @@ export default class Line extends Container {
   
   onShowComplete(resolve) {
     this.animationShowComplete = true;
-    resolve();
+    resolve(true);
   }
 
   setPoints() {
@@ -147,8 +153,6 @@ export default class Line extends Container {
     const { x: sX, y: sY } = parentPoints[choice.first];
     const { x: eX, y: eY } = childPoints[choice.second];
 
-
-
     this.draw({
       x: eX - sX,
       y: eY - sY,
@@ -156,6 +160,11 @@ export default class Line extends Container {
   }
 
   draw(secondPoint) {
+
+    if (!this.curve.progress && !this.curve.lastProgress) {
+      return;
+    } 
+
     const color = 0xff0000;
     const { graphics, points } = this;
     // graphics.clear();

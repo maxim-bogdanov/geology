@@ -77,9 +77,12 @@ export default class Node extends Container {
       this.promiseData.hide.reject = reject;
     });
 
+
     if (!this.animationShowComplete) {
-      console.log('animate node hide');
-      this.promiseData.show.reject();
+      this.promiseData.show.reject(false);
+      gsap.killTweensOf(this, "alpha");
+      this.animationShowComplete = true;
+
     }
 
     this.parentLines.forEach( line => {
@@ -91,10 +94,9 @@ export default class Node extends Container {
 
     this.animationHideComplete = false;
       
-    console.log(this.promiseLines);
-    console.log(this.parentLines);
     Promise.all(this.promiseLines).then(
       () => {
+      
         this.animateHide();
       }
     );
@@ -106,10 +108,9 @@ export default class Node extends Container {
   }
 
   animateHide() {
-    console.log('hide node',this);
-    // gsap.killTweensOf(this);
+    gsap.killTweensOf(this, "alpha");
     gsap.to(this, {
-      duration: 1,
+      duration: this.alpha,
       alpha: 0,
       onComplete: this.onHideComplete,
       callbackScope: this,
@@ -119,57 +120,56 @@ export default class Node extends Container {
   
   onHideComplete(resolve) {
     this.animationHideComplete = true;
-    resolve();
+
+    // this.interactive = false;
+    // this.buttonMode = false;
+    resolve(true);
   }
 
   show() {
     if (!this.isHidden) return;
-
     this.isHidden = false;
+
+    // this.interactive = true;
+    // this.buttonMode = true;
 
     this.promiseData.show.promise = new Promise((resolve, reject) => {
       this.promiseData.show.resolve = resolve;
       this.promiseData.show.reject = reject;
     });
 
+
     if (!this.animationHideComplete) {
-      console.log('animate node show');
-      this.promiseData.hide.reject();
+      this.promiseData.hide.reject(false);
+      gsap.killTweensOf(this, "alpha");
+      this.animationHideComplete = true;
     }
 
     // this.parentLines.forEach( line => {
     //   if (line.isHidden)
     //     line.show();
     // });
+    
     this.animationShowComplete = false;
 
     if (this.childLine && this.childLine.isHidden) {
       this.childLine.show();
-
-      // console.log(this.childLine.showPromise)
       this.childLine.promiseData.show.promise.then(
         () => {
           this.animateShow();
         }
-        // () => {
-        //   this.animateHide();
-        // }
       );
     } else {
       this.animateShow();
     }
 
-    
-    
-
     return this.promiseData.show.promise;
   }
 
   animateShow() {
-    console.log('animateShow');
-    // gsap.killTweensOf(this);
+    gsap.killTweensOf(this, "alpha");
     gsap.to(this, {
-      duration: 1,
+      duration: 1 - this.alpha,
       alpha: 1,
       onComplete: this.onShowComplete,
       callbackScope: this,
@@ -179,7 +179,8 @@ export default class Node extends Container {
   
   onShowComplete(resolve) {
     this.animationShowComplete = true;
-    resolve();
+    
+    resolve(true);
   }
 
   setPoints() {
@@ -605,8 +606,8 @@ export default class Node extends Container {
     this.addChild(graphics);
     this.addChild(this.text);
 
-    this.buttonMode = true;
-    this.interactive = true;
+    // this.buttonMode = false;
+    // this.interactive = false;
 
     this.setPoints();
     this.drawPoints();
@@ -630,6 +631,9 @@ export default class Node extends Container {
         x: this.center.x - this.position.x + childOffset.x,
         y: this.center.y - this.position.y + childOffset.y,
       };
+
+      this.buttonMode = false;
+      this.interactive = false;
 
       $(eventBus).trigger("change-focus", [coordPoint, this]);
     });
