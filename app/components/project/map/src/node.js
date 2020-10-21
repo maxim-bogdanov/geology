@@ -87,16 +87,15 @@ export default class Node extends Container {
 
     this.parentLines.forEach( line => {
       line.hide();
+
     });
 
-    if (!this.promiseLines) 
-      this.promiseLines = this.parentLines.map( line => line.promiseData.hide.promise);
+    this.promiseLines = this.parentLines.map( line => line.promiseData.hide.promise);
 
     this.animationHideComplete = false;
       
     Promise.all(this.promiseLines).then(
       () => {
-      
         this.animateHide();
       }
     );
@@ -120,7 +119,6 @@ export default class Node extends Container {
   
   onHideComplete(resolve) {
     this.animationHideComplete = true;
-
     // this.interactive = false;
     // this.buttonMode = false;
     resolve(true);

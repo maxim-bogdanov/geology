@@ -46,46 +46,41 @@ export default class Tree extends Container {
     const node = this.selectedNode;
     const main = this.children[0];
 
-    // let isChild = false;
-    // let adjacentParents;
+        // let adjacentParents;
 
     // if (!node.childs.length) {
+    //   isChild = true;
     //   if (node && node.childLine && node.childLine.parentNode.childLine &&
     //     node.childLine.parentNode.childLine.parentNode) {
-    //       isChild = true;
     //       adjacentParents = node.childLine.parentNode.childLine.parentNode.parentLines;
-    //       console.log(adjacentParents);
-
     //     }
+    //   else if (node && node.childLine && node.childLine.parentNode) {
+    //     adjacentParents = node.childLine.parentNode.parentLines.filter( line => line.childNode !== node && line.childNode.sign === node.sign);
+    //     adjacentParents.forEach( node => console.log(node.title));
+    //   }
     // } 
+
+    let isParent = node.childs.length;
 
     this.children
       .filter( child => {
         if (child instanceof Line) return;
         child.hide();
 
-        // // выбранный элемент
-        // if (child === node || child === this.children[0]) {
-        //   child.show();
-        //   return;
-        // }
+        if (isParent) {
+          // дети мейна
+          const foundChildofMain = main.parentLines.some( line => line.childNode === child );
+          if (foundChildofMain) return true;
 
-        // дети мейна
-        const foundChildofMain = main.parentLines.some( line => line.childNode === child );
+          // дети родителя 
+          const foundChild = node.parentLines.some( line => line.childNode === child );
+          if (foundChild) return true;
 
-        if (foundChildofMain) {
-          return true;
-        }
-
-        // ребенок 
-        const foundChild = node.parentLines.some( line => line.childNode === child );
-
-        if (foundChild) {
-          return true;
-        }
-
-        // child.hide();
-        return false;
+          return false;
+          
+        } else { // ребенок 
+          return child === node;
+        }        
       })
       .forEach( child => child.show());
 

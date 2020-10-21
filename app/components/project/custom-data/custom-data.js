@@ -136,6 +136,12 @@ class CustomData  {
   
               if (!newData[id]) newData[id] = {};
               newData[id][prop] = o[prop];
+              if (newData[id].id[0] === '-') {
+                newData[id].sign = '-';
+              }
+              else {
+                newData[id].sign = '+';
+              }
             }
         }
       }
