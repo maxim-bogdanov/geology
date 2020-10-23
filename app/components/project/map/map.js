@@ -1,11 +1,12 @@
 import { eventBus } from "../../../components/project/utils/shared";
 import { Container } from "pixi.js";
+import '../../../components/framework/template-engine/template-engine';
 import {
   registerPlugins,
   Plugin,
 } from "../../framework/jquery/plugins/plugins";
 import MapContainer from "./src/MapContainer";
-import Tree from "./src/Tree";
+import Tree from "./src/Tree"; 
 
 class Map extends Plugin {
   static WIDTH = 1920;
@@ -22,14 +23,21 @@ class Map extends Plugin {
       height: window.innerHeight,
     }));
 
-    // app.loader.add("Cera Bold", "./fonts/TypeMates  Cera Round Pro Bold.woff");
-    // app.loader.add(
-    //   "Cera Bold",
-    //   "../../../fonts/TypeMates  Cera Round Pro Bold.woff"
-    // );
-
     const background = PIXI.Sprite.from("images/bg.png");
     app.stage.addChild(background);
+
+    $(eventBus).on('open-child', (e, node) => {
+      const nodeInfo = {
+        content: node.content,
+        img: node.img,
+        sign: node.sign,
+        info: node.info, 
+        title: node.title
+      }
+
+      const $template = $('.map__content', $element);
+      $template.templateEngine(nodeInfo);
+    });
 
     $(window).on("resize", this.resize.bind(this));
 
