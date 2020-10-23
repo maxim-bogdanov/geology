@@ -12,7 +12,7 @@ export default class Node extends Container {
 
   static color = 0xce0203;
 
-  constructor({ title, id, children = [], content, style }, coord, styleType, center) {
+  constructor({ title, id, children = [], content, style, img, info, sign }, coord, styleType, center) {
     super();
 
     this.center = center;
@@ -20,11 +20,24 @@ export default class Node extends Container {
     this.childs = children;
     this.content = content;
     this.styleType = styleType;
+    this.style = style;
     this.id = id;
+    this.img = img;
+    this.info = info;
+    this.sign = sign;
     this.defaultPosition = coord;
     this.parentLines = [];
     this.childLine;
     this.isHidden = true;
+    this.graphics = new Graphics();
+    this.graphicsFirst = new Graphics();
+    this.firstMask = new Graphics();
+    this.firstPoint = new Graphics();
+    this.secondPoint = new Graphics();
+    this.dottedGraphicsContainer = new Container();
+    
+    this.setCoord();
+
 
     this.animationShowComplete = true;
     this.animationHideComplete = true;
@@ -77,25 +90,28 @@ export default class Node extends Container {
       this.promiseData.hide.reject = reject;
     });
 
+   
 
     if (!this.animationShowComplete) {
       this.promiseData.show.reject(false);
       gsap.killTweensOf(this, "alpha");
       this.animationShowComplete = true;
-
     }
 
     this.parentLines.forEach( line => {
       line.hide();
-
     });
 
+    this.promiseLines = [];
     this.promiseLines = this.parentLines.map( line => line.promiseData.hide.promise);
 
     this.animationHideComplete = false;
-      
+    // if (this.title === 'Динамическая геология')
+    //   console.log('lines promisses hidden started');
     Promise.all(this.promiseLines).then(
       () => {
+        // if (this.title === 'Динамическая геология')
+        //   console.log('lines promisses hidden ok');
         this.animateHide();
       }
     );
@@ -107,6 +123,7 @@ export default class Node extends Container {
   }
 
   animateHide() {
+    if (!this.isHidden) return;
     gsap.killTweensOf(this, "alpha");
     gsap.to(this, {
       duration: this.alpha,
@@ -120,6 +137,8 @@ export default class Node extends Container {
   onHideComplete(resolve) {
     this.animationHideComplete = true;
     // this.interactive = false;
+    // if (this.title === 'Динамическая геология')
+    //   console.log('hide complete')
     // this.buttonMode = false;
     resolve(true);
   }
@@ -137,9 +156,17 @@ export default class Node extends Container {
     });
 
 
+
     if (!this.animationHideComplete) {
-      this.promiseData.hide.reject(false);
+      // if (this.title === 'Динамическая геология')
+      //   console.log('hide не закончилась ', this.animationHideComplete);
       gsap.killTweensOf(this, "alpha");
+
+      // this.parentLines.forEach( line => {
+      //   line.promiseData.hide.reject(false);
+      // });
+
+      this.promiseData.hide.reject(false);
       this.animationHideComplete = true;
     }
 
@@ -154,6 +181,8 @@ export default class Node extends Container {
       this.childLine.show();
       this.childLine.promiseData.show.promise.then(
         () => {
+          // if (this.title === 'Динамическая геология')
+          //   console.log('lines promises show ok');
           this.animateShow();
         }
       );
@@ -165,6 +194,7 @@ export default class Node extends Container {
   }
 
   animateShow() {
+    if (this.isHidden) return;
     gsap.killTweensOf(this, "alpha");
     gsap.to(this, {
       duration: 1 - this.alpha,
@@ -177,7 +207,8 @@ export default class Node extends Container {
   
   onShowComplete(resolve) {
     this.animationShowComplete = true;
-    
+    // if (this.title === 'Динамическая геология')
+    //   console.log('show complete')
     resolve(true);
   }
 
@@ -228,7 +259,8 @@ export default class Node extends Container {
 
   drawPoints() {
 
-    const firstPoint = new Graphics();
+    // const firstPoint = new Graphics();
+    const {firstPoint, secondPoint} = this;
     firstPoint.lineStyle(
       2, Node.color
     );
@@ -237,7 +269,7 @@ export default class Node extends Container {
     firstPoint.endFill();
     this.addChild(firstPoint);
 
-    const secondPoint = new Graphics();
+    // const secondPoint = new Graphics();
     secondPoint.lineStyle(
       2, Node.color
     );
@@ -254,7 +286,6 @@ export default class Node extends Container {
 
     this.graph = this.getGraph(options);
 
-    this.dottedGraphicsContainer = new Container();
     this.addChild(this.dottedGraphicsContainer);
 
     const step = 0.016;
@@ -405,7 +436,7 @@ export default class Node extends Container {
 
   drawMain() {
     const { graphics } = this;
-    graphics.clear();
+    // graphics.clear();
 
     const leftImg = new PIXI.Sprite.from('./images/+001.png');
     const rightImg = new PIXI.Sprite.from('./images/001+.png');
@@ -440,7 +471,7 @@ export default class Node extends Container {
 
   drawParent() {
     const { graphics } = this;
-    graphics.clear();
+    // graphics.clear();
 
     graphics.lineStyle(
       buttonStyle[this.styleType].rect.lineWidth,
@@ -462,13 +493,15 @@ export default class Node extends Container {
   }
 
   drawChild() {
-    this.graphicsFirst = new Graphics();
-    this.firstMask = new Graphics();
+    // this.graphicsFirst = new Graphics();
+    // this.firstMask = new Graphics();
+    const { graphicsFirst, firstMask} = this;
+    // graphicsFirst.clear();
+    // firstMask.clear();
     const lineWidth = buttonStyle[this.styleType].rect.lineWidth;
 
     this.graphicsFirst.clear();
 
-    const { graphics, graphicsFirst, firstMask } = this;
 
     this.addChild(this.firstMaskContainer);        
        
@@ -521,8 +554,9 @@ export default class Node extends Container {
   
 
   drawRect() {
-    this.graphicsFirst = new Graphics();
-    this.firstMask = new Graphics();
+    // this.graphicsFirst = new Graphics();
+    // this.firstMask = new Graphics();
+    // const { graphicsFirst, firstMask} = this;
 
     const { graphics, graphicsFirst, graphicsSecond, firstMask, secondMask } = this;
 
@@ -536,7 +570,7 @@ export default class Node extends Container {
         break;  
 
       case 'opened': 
-          
+        
         graphics.clear();
         graphics.lineStyle(
           buttonStyle[this.styleType].rect.lineWidth,
@@ -549,6 +583,7 @@ export default class Node extends Container {
           this.heightRect,
           this.radius
         );
+
         break;
 
       case 'childUp':
@@ -566,32 +601,66 @@ export default class Node extends Container {
   }
 
   drawOuter() {
-    const { graphics } = this;
 
-    graphics.lineStyle(
+    this.graphics.lineStyle(
       buttonStyle[this.styleType].outer.lineWidth,
       buttonStyle.color
     );
     
-    graphics.beginFill(
+    this.graphics.beginFill(
       buttonStyle.color,
       buttonStyle[this.styleType].outer.fill
     );
 
-    graphics.drawRoundedRect(
+    this.graphics.drawRoundedRect(
       -this.widthOuter / 2,
       -this.heightOuter / 2,
       this.widthOuter,
       this.heightOuter,
       this.radius
     );
-    graphics.endFill();
+    this.graphics.endFill();
+    
+  }
+
+  setCoord() {
+    let childOffset = {
+      x: 0,
+      y: 0
+    };
+    
+    if (!this.childs.length) {
+      const sign = this.id[0] === '-' ? -1 : 1;
+      childOffset = {
+        x: -200 * sign,
+        y: -300,
+      }
+    }
+
+    this.coordOffest = {
+      x: this.center.x - this.defaultPosition.x + childOffset.x,
+      y: this.center.y - this.defaultPosition.y + childOffset.y,
+    };
   }
 
 
   draw() {
-    this.graphics = new Graphics();
-    const { graphics } = this;
+ 
+    const { graphics, graphicsFirst, dottedGraphicsContainer, firstPoint,
+    secondPoint, firstMask} = this;
+    graphics.clear();
+    firstPoint.clear();
+    secondPoint.clear();
+    graphics.clear();
+    graphicsFirst.clear();
+    firstMask.clear();
+    graphics.clear();
+
+    dottedGraphicsContainer.removeChildren(0, dottedGraphicsContainer.length);
+    // const textInd = this.children.findIndex( child => child instanceof Text);
+    // if (textInd)
+    //   this.removeChildAt(textInd);
+    // this.removeChildren();
 
     this.setTextStyle(this.styleType);
 
@@ -612,28 +681,10 @@ export default class Node extends Container {
 
     this.on("pointerdown", () => {
 
-      let childOffset = {
-        x: 0,
-        y: 0
-      };
-      
-      if (!this.childs.length) {
-        const sign = this.id[0] === '-' ? -1 : 1;
-        childOffset = {
-          x: -200 * sign,
-          y: -300,
-        }
-      }
-
-      const coordPoint = {
-        x: this.center.x - this.position.x + childOffset.x,
-        y: this.center.y - this.position.y + childOffset.y,
-      };
-
       this.buttonMode = false;
       this.interactive = false;
-
-      $(eventBus).trigger("change-focus", [coordPoint, this]);
+      
+      $(eventBus).trigger("activate-focus", [this.coordOffest, this]);
     });
   }
 }
