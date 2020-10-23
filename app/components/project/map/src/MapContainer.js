@@ -19,7 +19,7 @@ export default class MapContainer extends Container {
     // if (DEBUG)
     // this.addTest();
 
-    $(eventBus).on("focus-changed", (e, coord, activeNode) => {
+    $(eventBus).on("focus-activated", (e, coord, activeNode) => {
       this.selectedNode = activeNode;
       this.setOffset(coord, {
         ease: "power1.out",
@@ -59,6 +59,7 @@ export default class MapContainer extends Container {
 
 
   setOffset({ x: offsetX, y: offsetY }, options) {
+    gsap.killTweensOf(this);
     gsap.to(this, {
       offsetX: this.getValidOffsetX(offsetX),
       offsetY: this.getValidOffsetY(offsetY),
@@ -70,13 +71,7 @@ export default class MapContainer extends Container {
   }
 
   showChild() {
-    // gsap.killTweensOf(this);
-    // const { selectedNode } = this;
-    // if (!selectedNode.childs.length) {
-    //   console.log(selectedNode.title)
-    //   $(eventBus).trigger('open-child', this.selectedNode);
-    // }
-    $(eventBus).trigger('map-container:focus-changed', this.selectedNode);
+    $(eventBus).trigger('map-container:focus-changed');
   }
 
   get offsetX() {

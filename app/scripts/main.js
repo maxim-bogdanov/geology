@@ -14,8 +14,8 @@ function onDocumentReady() {
 
   $(document.documentElement).trigger("document:ready");
 
-  $(eventBus).on("change-focus", function (e, coord, nodeContainer) {
-    $(eventBus).trigger("focus-changed", [coord, nodeContainer]);
+  $(eventBus).on("activate-focus", function (e, coord, nodeContainer) {
+    $(eventBus).trigger("focus-activated", [coord, nodeContainer]);
   });
   // console.log(data);
 }
