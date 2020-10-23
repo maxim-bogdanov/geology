@@ -1,3 +1,4 @@
+// import gsap from "gsap/gsap-core";
 import { eventBus, data } from "../../utils/shared";
 const { Container, Graphics } = global.PIXI;
 
@@ -19,6 +20,7 @@ export default class MapContainer extends Container {
     // this.addTest();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
+      this.selectedNode = activeNode;
       this.setOffset(coord, {
         ease: "power1.out",
       });
@@ -45,13 +47,36 @@ export default class MapContainer extends Container {
   //   this.contentContainer.addChild(graphics);
   // }
 
+  getValidOffsetX(offsetX) {
+    return Math.min(offsetX, this.contentWidth);
+    // return offsetX;
+  }
+
+  getValidOffsetY(offsetY) {
+    return Math.min(offsetY, this.contentHeight);
+    // return offsetY;
+  }
+
+
   setOffset({ x: offsetX, y: offsetY }, options) {
     gsap.to(this, {
-      offsetX,
-      offsetY,
+      offsetX: this.getValidOffsetX(offsetX),
+      offsetY: this.getValidOffsetY(offsetY),
+      onComplete: this.showChild,
+      callbackScope: this,
       duration: 2,
       ...options,
     });
+  }
+
+  showChild() {
+    // gsap.killTweensOf(this);
+    // const { selectedNode } = this;
+    // if (!selectedNode.childs.length) {
+    //   console.log(selectedNode.title)
+    //   $(eventBus).trigger('open-child', this.selectedNode);
+    // }
+    $(eventBus).trigger('map-container:focus-changed', this.selectedNode);
   }
 
   get offsetX() {
@@ -60,8 +85,8 @@ export default class MapContainer extends Container {
 
   set offsetX(offsetX) {
     const { width, contentWidth, contentContainer } = this;
-    // offsetX = Math.min(0, Math.max(offsetX, width - contentWidth));
 
+    this._offsetX = this.getValidOffsetX(offsetX);
     this._offsetX = offsetX;
     contentContainer.position.x = offsetX;
   }
@@ -74,7 +99,7 @@ export default class MapContainer extends Container {
     const { height, contentHeight, contentContainer } = this;
     // offsetY = Math.min(0, Math.max(offsetY, height - contentHeight));
 
-    this._offsetY = offsetY;
+    this._offsetY = this.getValidOffsetY(offsetY);
     contentContainer.position.y = offsetY;
   }
 }
