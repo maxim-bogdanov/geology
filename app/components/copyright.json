@@ -21,17 +21,7 @@
       "tw": "<?= $share->image['tw'] ?>"
     }
   },
-  "header": {
-    "title": {
-    "content":"Геологические науки",
-    "img": "images/header/name.png"
-    },
-    "back": {
-        "content": "В начало",
-        "class": "header__back_visible",
-        "img": "images/header/back.png"
-    }
-  },
+
 
   "map":{
     "mapModal":{
@@ -39,7 +29,24 @@
         "info":"{{info}}",
         "title":"{{title}}",
         "content":"{{content}}"
+      },
+      "header": {
+        "title": {
+        "content":"Геологические науки",
+        "img": "images/header/name.png"
+        },
+        "back": {
+            "content": "В начало",
+            "class": "header__back_visible",
+            "img": "images/header/back.png"
+        }
       }
+  },
+
+  "editor": {
+    "text": "{{text}}",
+    "left": "{{left}}",
+    "top": "{{top}}"
   },
   "names": [
     {

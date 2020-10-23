@@ -46,11 +46,36 @@ class Map extends Plugin {
       $template.templateEngine(nodeInfo);
 
       const $name = $('.name', $element);
+      if (nodeInfo.sign === '-')
+        $name.removeClass('name_right');
+      else
+        $name.addClass('name_right');
+
+      gsap.killTweensOf($name);
+      gsap.fromTo($name, 0.5, 
+        {opacity: 0},{
+        opacity: 1
+      });
+
+      $(eventBus).on('focus-back', () => {
+        gsap.killTweensOf($name);
+        gsap.fromTo($name, 0.5, 
+          {opacity: 1},{
+          opacity: 0,
+          onComplete: fadeOutName,
+        });
+
+        function fadeOutName() {
+          $name.remove();
+        }
+      });
+
       $name.on('click', () => {
-        $name.remove();
         $(eventBus).trigger('focus-back');
       });
     });
+
+
 
     $(window).on("resize", this.resize.bind(this));
 
@@ -78,6 +103,7 @@ class Map extends Plugin {
 
     this.resize();
   }
+
 
   update() {
     this.tree.update();

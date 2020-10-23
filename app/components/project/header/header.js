@@ -12,34 +12,31 @@ class Header extends Plugin {
   constructor($element) {
     super($element);
     $(eventBus)
-    .on('quiz-activated', function(){
+    .on('focus-activated', function(e, coord, node){
+      if (node.childs.length) return;
+
       let $headerBack = $('.header__back', $element);
       $headerBack.addClass('header__back_active');
-      $('.header__score', $element).addClass('header__score_active');
-      gsap.from($headerBack,  TIME_FADING, {
+      gsap.killTweensOf($headerBack);
+      gsap.fromTo($headerBack,  TIME_FADING, {
         x: 230
-      })
+      }, {x : 0})
     })
-    .on('end-screen:deactivated', function(){
-      $('.header__back', $element).removeClass('header__back_active');
-      $('.header__score', $element).removeClass('header__score_active');
-    })
-    .on('score-change', function() {
-      let score = getScore();
-      $('.header__score-num', $element).html( score );
-    })
-    .on('end-screen:activated', function() {
-      $('.header__score-inner', $element).addClass('header__score-inner_end');
-    })
-    .on('end-screen:deactivated', function() {
-      $('.header__score-inner', $element).removeClass('header__score-inner_end');
-    })
-    .on('page-reset',function(){
-      $(eventBus).trigger('score-change');
+    .on('focus-back', function() {
+      let $headerBack = $('.header__back', $element);
+      gsap.killTweensOf($headerBack);
+      gsap.to($headerBack,  TIME_FADING, {
+        x: 230,
+        onComplete: removeHeader,
+      });
+
+      function removeHeader() {
+        $headerBack.removeClass('header__back_active');
+      }
     });
 
     $('.header__back', $element).on('click', function(e, data){
-      $(eventBus).trigger('reset-page');
+      $(eventBus).trigger('focus-back');
     });
 
   }

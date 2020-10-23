@@ -2,8 +2,8 @@ mixin header(content, params)
   header.header&attributes(attributes)
     .header__top
       .header__name 
-        .header__name-text !{copyright.header.title.content}
-        img(src=copyright.header.title.img)
+        .header__name-text !{content.title.content}
+        img(src=content.title.img)
         a.header__back(href="#")
-          .header__back-text !{copyright.header.back.content}
-          img(src=copyright.header.back.img)
+          .header__back-text !{content.back.content}
+          img(src=content.back.img)

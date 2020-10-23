@@ -14,3 +14,6 @@ require('./map/map');
 require('./header/header');
 require('./names/names');
 require('./name/name');
+
+require('./editor/editor');
+require('./squareNode/squareNode');

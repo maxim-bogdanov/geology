@@ -1,0 +1,5 @@
+mixin editor(content, params)
+  .editor&attributes(attributes)
+    +template-engine().template-node
+      .squareNode(style!='left:'+ content.left + "; top:" +content.top)
+        .squareNode__text !{content.text}

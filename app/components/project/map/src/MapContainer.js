@@ -84,6 +84,7 @@ export default class MapContainer extends Container {
     this._offsetX = this.getValidOffsetX(offsetX);
     this._offsetX = offsetX;
     contentContainer.position.x = offsetX;
+
   }
 
   get offsetY() {

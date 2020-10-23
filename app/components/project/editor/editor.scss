@@ -1,0 +1,39 @@
+.editor {
+  // Константы
+  @mixin mod($mod) {
+    @include modifier("editor", $mod) {
+      @content;
+    }
+  }
+
+  background-color: black;
+  width: 100vw;
+  height: 100vh;
+
+  .squareNode {
+    // Константы
+    @mixin mod($mod) {
+      @include modifier("squareNode", $mod) {
+        @content;
+      }
+    }
+
+    display: inline-block;
+    padding: 15px 30px;
+
+    cursor: pointer;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    background-color: darksalmon;
+    position: absolute;
+
+    &__text {
+      color: #fff;
+      font-size: 30px;
+    }
+  }
+}

@@ -4,13 +4,13 @@
   left: 50%;
   z-index: 10;
 
-  width: 100%;
+  width: 383px;
   max-width: 1770px;
   margin: 0 auto;
 
   transform: translateX(-50%);
   // Константы
-  @mixin mod($mod) { 
+  @mixin mod($mod) {
     @include modifier("header", $mod) {
       @content;
     }
