@@ -35,6 +35,7 @@ export default class Tree extends Container {
     this.draw();
 
     $(eventBus).on("focus-changed", (e, coord, activeNode) => {
+
       this.selectedNode = activeNode;
       this.draw();
     });
@@ -45,20 +46,6 @@ export default class Tree extends Container {
   draw() {
     const node = this.selectedNode;
     const main = this.children[0];
-
-        // let adjacentParents;
-
-    // if (!node.childs.length) {
-    //   isChild = true;
-    //   if (node && node.childLine && node.childLine.parentNode.childLine &&
-    //     node.childLine.parentNode.childLine.parentNode) {
-    //       adjacentParents = node.childLine.parentNode.childLine.parentNode.parentLines;
-    //     }
-    //   else if (node && node.childLine && node.childLine.parentNode) {
-    //     adjacentParents = node.childLine.parentNode.parentLines.filter( line => line.childNode !== node && line.childNode.sign === node.sign);
-    //     adjacentParents.forEach( node => console.log(node.title));
-    //   }
-    // } 
 
     let isParent = node.childs.length;
 
@@ -79,55 +66,16 @@ export default class Tree extends Container {
           return false;
           
         } else { // ребенок 
-          return child === node;
+          if (child === node) {
+            node.styleType = 'opened';
+            
+            // node.draw();
+
+            return true;
+          } else return false;
         }        
       })
       .forEach( child => child.show());
-
-
-
-    // this.children.forEach( child => {
-    //   if (child instanceof Line) return;
-
-    //   // if (isChild) {
-    //   //   const foundAdjacentParent = adjacentParents.find( line => line.childNode === child
-    //   //     && ((node.id[0] === child.id[0]) && (child.id[0] === '-')
-    //   //     || (node.id[0] !== child.id[0]) && (child.id[0] !== '-')) );
-    //   //   if (foundAdjacentParent && foundAdjacentParent !== node.childLine.parentNode) {
-    //   //     console.log(foundAdjacentParent.childNode.title);
-    //   //     foundAdjacentParent.childNode.hide();
-    //   //     return;
-    //   //   }
-    //   // }
-      
-    //   child.hide();
-
-
-    //   // выбранный элемент
-    //   // if (child === node || child === this.children[0]) {
-    //   //   child.show();
-    //   //   return;
-    //   // }
-
-    //   // ребенок 
-    //   const foundChild = node.parentLines.some( line => line.childNode === child );
-
-    //   if (foundChild) {
-    //     child.show();
-    //     return;
-    //   }
-
-    //   // дети мейна
-    //   const foundChildofMain = main.parentLines.some( line => line.childNode === child );
-
-    //   if (foundChildofMain) {
-    //     child.show();
-    //     return;
-    //   }
-
-    //   // child.hide();
-      
-    // });
   }
 
   
