@@ -34,10 +34,15 @@ export default class Tree extends Container {
     this.selectedNode = this.children[0];
     this.draw();
 
-    $(eventBus).on("focus-changed", (e, coord, activeNode) => {
-
+    $(eventBus).on("focus-activated", (e, coord, activeNode) => {
       this.selectedNode = activeNode;
       this.draw();
+    });
+    
+    $(eventBus).on('focus-back', (e) => {
+      this.selectedNode = this.selectedNode.childLine.parentNode;
+      this.draw();
+      $(eventBus).trigger('activate-focus', [this.selectedNode.coordOffest, this.selectedNode])
     });
 
  
