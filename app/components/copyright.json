@@ -32,6 +32,15 @@
         "img": "images/header/back.png"
     }
   },
+
+  "map":{
+    "mapModal":{
+        "img":"{{img}}",
+        "info":"{{info}}",
+        "title":"{{title}}",
+        "content":"{{content}}"
+      }
+  },
   "names": [
     {
         "id": 0,

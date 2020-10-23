@@ -26,6 +26,12 @@ export const buttonStyle = {
       lineWidth: 9,
       fill: 0,
     },
+    outer: {
+      top: 25,
+      left: 50,
+      lineWidth: 2,
+      fill: 0,
+    },
   },
   parent: {
     text: {
