@@ -26,7 +26,15 @@ class Map extends Plugin {
     const background = PIXI.Sprite.from("images/bg.png");
     app.stage.addChild(background);
 
-    $(eventBus).on('open-child', (e, node) => {
+    $(eventBus).on('focus-activated', (e, coord, node) => {
+      this.selectedNode = node;
+    });
+
+    $(eventBus).on('map-container:focus-changed', () => {
+
+      const node = this.selectedNode;
+      if (node.childs.length) return;
+
       const nodeInfo = {
         content: node.content,
         img: node.img,
@@ -34,9 +42,14 @@ class Map extends Plugin {
         info: node.info, 
         title: node.title
       }
-
       const $template = $('.map__content', $element);
       $template.templateEngine(nodeInfo);
+
+      const $name = $('.name', $element);
+      $name.on('click', () => {
+        $name.remove();
+        $(eventBus).trigger('focus-back');
+      });
     });
 
     $(window).on("resize", this.resize.bind(this));
