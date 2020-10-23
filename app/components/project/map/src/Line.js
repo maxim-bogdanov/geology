@@ -65,6 +65,7 @@ export default class Line extends Container {
     this.animationHideComplete = false;
 
     this.childNode.promiseData.hide.promise.then( () => {
+      
       this.animateHide();
     });
 
@@ -72,6 +73,7 @@ export default class Line extends Container {
   }
 
   animateHide() {
+    if (!this.isHidden) return;
     gsap.killTweensOf(this.curve);
     this.countTicker = 0;
     gsap.to(this.curve, {
@@ -84,6 +86,8 @@ export default class Line extends Container {
   }
   
   onHideComplete(resolve) {
+    // if (this.parentNode.title === 'Динамическая геология')
+    //   console.log('hide complete line')
     this.animationHideComplete = true;
     resolve(true);
   }
@@ -117,6 +121,7 @@ export default class Line extends Container {
   }
 
   animateShow() {
+    if (this.isHidden) return;
     gsap.killTweensOf(this.curve);
     gsap.to(this.curve, {
       duration: 1 - this.curve.progress,
@@ -129,6 +134,8 @@ export default class Line extends Container {
 
   
   onShowComplete(resolve) {
+    // if (this.childNode.title = "Динамическая геология")
+    //   console.log('lines shown');
     this.animationShowComplete = true;
     resolve(true);
   }
