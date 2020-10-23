@@ -1,10 +1,12 @@
 .name {
   // Константы
   @mixin mod($mod) {
-    @include modifier("name", $mod){
+    @include modifier("name", $mod) {
       @content;
     }
   }
+  position: absolute;
+  z-index: 2;
 
   &_right {
     .name-inner {
@@ -50,8 +52,6 @@
     height: 82px;
   }
 
-
-  
   &__parent-wrap {
     display: flex;
     align-items: center;
@@ -62,7 +62,7 @@
   }
 
   &__info {
-    font-family: 'Glober Bold';
+    font-family: "Glober Bold";
     font-size: 24px;
     text-transform: uppercase;
     text-align: center;
@@ -70,10 +70,7 @@
   }
 
   &__content {
-    font-family: 'Glober Regular';
+    font-family: "Glober Regular";
     font-size: 36px;
   }
-
-
-
 }

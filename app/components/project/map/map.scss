@@ -31,4 +31,83 @@
       display: none;
     }
   }
+
+  &__content {
+    .name {
+      // Константы
+      @mixin mod($mod) {
+        @include modifier("name", $mod) {
+          @content;
+        }
+      }
+
+      &_right {
+        .name-inner {
+          flex-direction: row-reverse;
+        }
+        .name__title-wrap {
+          justify-content: flex-end;
+        }
+        .name__parent-wrap {
+          justify-content: flex-start;
+        }
+      }
+
+      color: #ffffff;
+      position: absolute;
+      z-index: 2;
+
+      padding: 0 75px;
+      &__parent {
+        position: relative;
+        cursor: pointer;
+      }
+
+      &__title {
+        position: relative;
+        cursor: pointer;
+      }
+
+      &-inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        height: 100vh;
+        margin: auto;
+      }
+
+      &__title-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        margin-bottom: 130px;
+        margin-left: 50px;
+        height: 82px;
+      }
+
+      &__parent-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        margin-bottom: 85px;
+        height: 88px;
+      }
+
+      &__info {
+        font-family: "Glober Bold";
+        font-size: 24px;
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 30px;
+      }
+
+      &__content {
+        font-family: "Glober Regular";
+        font-size: 36px;
+      }
+    }
+  }
 }

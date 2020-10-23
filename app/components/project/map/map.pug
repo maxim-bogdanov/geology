@@ -4,5 +4,12 @@ mixin map(content, params)
     .map__font2 font
     .map__font3 font
     .map__font4 font
-    //- +header
-    //- +names
+    +template-engine().map__content
+      .name.name_right
+        .name-inner
+          .name__img
+            img(src!=content.mapModal.img)
+            .name__info !{content.mapModal.info}
+          .name__descr
+            .name__content !{content.mapModal.content}
+
