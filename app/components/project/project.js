@@ -14,6 +14,7 @@ require('./map/map');
 require('./header/header');
 require('./names/names');
 require('./name/name');
+require('./save-button/save-button');
 
 require('./editor/editor');
 require('./squareNode/squareNode');

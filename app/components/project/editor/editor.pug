@@ -3,3 +3,4 @@ mixin editor(content, params)
     +template-engine().template-node
       .squareNode(style!='left:'+ content.left + "; top:" +content.top)
         .squareNode__text !{content.text}
+    +save-button()

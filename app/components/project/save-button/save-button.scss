@@ -1,0 +1,19 @@
+.save-button {
+  // Константы
+  @mixin mod($mod) {
+    @include modifier("save-button", $mod) {
+      @content;
+    }
+  }
+
+  color: #ffffff;
+  font-size: 20px;
+  display: inline-block;
+  background-color: blue;
+  border-radius: 10px;
+  padding: 5px 10px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  cursor: pointer;
+}

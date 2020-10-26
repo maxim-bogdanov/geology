@@ -4,94 +4,148 @@ import {
 } from "../../framework/jquery/plugins/plugins";
 import data from '../custom-data/custom-data';
 import '../../framework/template-engine/template-engine';
-
+import settings from './editor-settings'
 
 
 class Editor extends Plugin {
 
-  static width = 1920;
-  static height = 1080;
-
-  static contentWidth = 1920;
-  static contentHeight = 1080;
-
-  // eslint-disable-next-line no-useless-constructor
   constructor($element) {
     super($element);
 
     this.$element = $element;
-
-    $(window).on('load resize', this.resize);
+    const {eventMove, eventLeave, width,height} = settings;
 
     this.center = {
-      x: Editor.width / 2,
-      y: Editor.height / 2
+      x: width / 2,
+      y: height / 2
     };
-    
+
     this.data = data.newData;
+    this.$template = $element.find('.template-node');
     this.createNodes();
 
-    const $node = $('.squareNode', $element);
-    
-    // $node.on('click', () => {
-    //   this.dragElement(this);
-    // });
+    $element.on(eventMove, this.moveMouse);
+    $element.on(eventLeave, this.upMouse);
+
+    const $saveButton = $element.find('.save-button');
+    $saveButton.on('click', () => this.saveButtonClicked());
+  }
+
+  saveButtonClicked() {
+    console.log(this.data);
   }
   
 
   createNodes() {
-    const {data, $element, center} = this;
+    const {data, $template} = this;
+    const {eventStart, procentHeight, procentWidth} = settings;
 
     for (let nodeId in data) {
       const node = data[nodeId];
 
       const nodeInfo = {
         text: node.title,
-        left: 50 + node.x*100 +'%',
-        top: 50 + node.y*100 +'%'
+        left: `${50 + node.x*procentWidth}%`,
+        top: `${50 + node.y*procentHeight}%`,
+        id: node.id
       }
 
-      const $template = $('.template-node', $element);
-      $template.templateEngine(nodeInfo);
 
-      const $node = $('.squareNode', $element).first();
+      const $node = $template.templateEngine(nodeInfo);
+      $node.get(0).nodeInfo = nodeInfo;
+
+      $node.on(eventStart, this.downMouse);
+
+      
+      $node.on('dragstart', () => false);
     };
   }
 
-  // var ball = document.getElementById('ball');
+  downMouse=(e)=> {
+    const { $element} = this;
 
-  // ball.onmousedown = function(e) { // 1. отследить нажатие
+    const {eventFinish} = settings;
 
-  //   // подготовить к перемещению
-  //   // 2. разместить на том же месте, но в абсолютных координатах
-  //   ball.style.position = 'absolute';
-  //   moveAt(e);
-  //   // переместим в body, чтобы мяч был точно не внутри position:relative
-  //   document.body.appendChild(ball);
+    console.log('down mouse')
+    const $node = $(e.target.closest('.squareNode'));
+    this.$node = $node;
 
-  //   ball.style.zIndex = 1000; // показывать мяч над другими элементами
+    this.pageX = e.pageX ? e.pageX : (e.changedTouches[0].pageX ? e.changedTouches[0].pageX : null);
+    this.pageY = e.pageY ? e.pageY : (e.changedTouches[0].pageY ? e.changedTouches[0].pageY : null);
 
-  //   // передвинуть мяч под координаты курсора
-  //   // и сдвинуть на половину ширины/высоты для центрирования
-  //   function moveAt(e) {
-  //     ball.style.left = e.pageX - ball.offsetWidth / 2 + 'px';
-  //     ball.style.top = e.pageY - ball.offsetHeight / 2 + 'px';
-  //   }
+    // console.log(this.pageX, this.pageY, 'pageX pageY')
 
-  //   // 3, перемещать по экрану
-  //   document.onmousemove = function(e) {
-  //     moveAt(e);
-  //   }
+    const {width, height, left, top} =  $node.get(0).getBoundingClientRect();
 
-  //   // 4. отследить окончание переноса
-  //   ball.onmouseup = function() {
-  //     document.onmousemove = null;
-  //     ball.onmouseup = null;
-  //   }
-  resize() {
-    console.log('hi')
+    const nodeCenter = {
+      x: left + width/2,
+      y: top + height/2
+    }
+    
+    this.offsetX = this.pageX - nodeCenter.x;
+    this.offsetY = this.pageY - nodeCenter.y; 
+    
+    console.log(this.offsetX,this.offsetY);
+
+    $node.addClass('squareNode_active');
+
+    $node.on(eventFinish, this.upMouse);
+    // $element.on('mouseleave touchcancel', this.upMouse);
+
+
   }
 
+  upMouse = (e) => {
+    // const $node = $(e.target.closest('.squareNode'));
+    const {$node} = this;
+    if (!$node) return;
+
+    const {procentHeight, procentWidth} = settings;
+    const nodeInfo = $node.get(0).nodeInfo;
+    console.log('mouse up');
+
+    this.destroyMouse(e);
+
+    this.data[nodeInfo.id].newX = (parseFloat($node.css("left") ) * 100 / (window.innerWidth ) - 50)/procentWidth ;
+    this.data[nodeInfo.id].newy = (parseFloat($node.css("top") ) * 100 / (window.innerHeight ) - 50)/procentHeight ;
+  }
+
+  moveMouse = (e) => {
+    const {$node} = this;
+    if (!$node) return;
+
+    this.pageX = e.pageX ? e.pageX : (e.changedTouches[0].pageX ? e.changedTouches[0].pageX : null);
+    this.pageY = e.pageY ? e.pageY : (e.changedTouches[0].pageY ? e.changedTouches[0].pageY : null);
+
+    this.moveAt(e);
+  }
+
+  moveAt = (e) =>{
+    const {$node} = this;
+
+    this.pageX = e.pageX ? e.pageX : (e.changedTouches[0].pageX ? e.changedTouches[0].pageX : null);
+    this.pageY = e.pageY ? e.pageY : (e.changedTouches[0].pageY ? e.changedTouches[0].pageY : null);
+
+    const {pageX, pageY, offsetX, offsetY} = this;
+
+    $node.css({left: `${100 * (pageX - offsetX) / window.innerWidth}%`,
+                top: `${100 * (pageY - offsetY) / window.innerHeight}%`})
+  }
+
+  destroyMouse(e) {
+    const {$element, $node} = this;
+    const {eventFinish} = settings;
+
+    $node.off(eventFinish, this.upMouse);
+    $node.removeClass('squareNode_active');
+    this.$node = null;
+  }
+
+  destroy(){
+    super.destroy();
+
+
+  }
 
 }
 
