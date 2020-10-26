@@ -32,7 +32,7 @@ class Editor extends Plugin {
   }
 
   saveButtonClicked() {
-    console.log(this.data);
+    console.log(JSON.stringify(this.data));
   }
   
 
@@ -117,20 +117,12 @@ class Editor extends Plugin {
     this.pageX = e.pageX ? e.pageX : (e.changedTouches[0].pageX ? e.changedTouches[0].pageX : null);
     this.pageY = e.pageY ? e.pageY : (e.changedTouches[0].pageY ? e.changedTouches[0].pageY : null);
 
-    this.moveAt(e);
-  }
-
-  moveAt = (e) =>{
-    const {$node} = this;
-
-    this.pageX = e.pageX ? e.pageX : (e.changedTouches[0].pageX ? e.changedTouches[0].pageX : null);
-    this.pageY = e.pageY ? e.pageY : (e.changedTouches[0].pageY ? e.changedTouches[0].pageY : null);
-
     const {pageX, pageY, offsetX, offsetY} = this;
 
     $node.css({left: `${100 * (pageX - offsetX) / window.innerWidth}%`,
-                top: `${100 * (pageY - offsetY) / window.innerHeight}%`})
+              top: `${100 * (pageY - offsetY) / window.innerHeight}%`})
   }
+
 
   destroyMouse(e) {
     const {$element, $node} = this;
