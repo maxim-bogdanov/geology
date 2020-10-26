@@ -643,6 +643,12 @@ export default class Node extends Container {
     };
   }
 
+  activateClick(isSame) {
+    this.buttonMode = !isSame;
+    this.interactive = !isSame;
+    this.hitArea = new PIXI.RoundedRectangle(-this.width/2, -this.height/2, this.width,this.height, 40);
+  }
+
 
   draw() {
  

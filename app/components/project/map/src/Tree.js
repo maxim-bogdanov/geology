@@ -95,8 +95,8 @@ export default class Tree extends Container {
 
     this.children.forEach((_node) => {
       const isSame = _node === node;
-      _node.buttonMode = !isSame;
-      _node.interactive = !isSame;
+      if (_node instanceof Node)
+        _node.activateClick(isSame);      
     });
   }
 
